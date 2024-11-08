@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Product</title>
+</head>
+<body>
+ <section>
+        <div class="container-fluid bg-primary p-5 mt-5">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <form>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="ch" placeholder="Nhập sản phẩm bạn cần tìm">
+                            <button class="btn btn-light text-dark ms-3 col-md-2">
+                                <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+     <div class="container-fluid mt-1">
+         <div class="row">
+            <div class="col-md-2 p-0">
+                <div class="card shadow-sm p-0 mb-5 bg-body-tertiary rounded">
+                    <div class="card-body">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                        Loại danh mục
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">ASUS</a>
+                    <a href="#" class="list-group-item list-group-item-action">MSI</a>
+                    <a href="#" class="list-group-item list-group-item-action">HP</a>
+                    <a class="list-group-item list-group-item-action disabled" aria-disabled="true">Dell</a>
+                </div>
+            </div>
+                </div>
+            </div>
+             <div class="col-md-10">
+                 <div class="card">
+                     <div class="card-body">
+                         <p class="js-3 text-center fw-bold">Các sản phẩm</p>
+                         <div class="row">
+                             <div class="col-md-3">
+                                 <div class="card">
+                                     <div class="card-body">
+                                         <img src="/img/product_img/laptop.jpg" width="100%" height="150px">
+                                         <p class="fs-5 text-center">Laptop Asus Zenbook 14 OLED Q425MA-U71TB</p>
+                                         <div class="row text-center">
+                                             <p class="fs-6 fw-bold">
+                                                 <span style="text-decoration: line-through; color: gray;">24.790.000đ</span>
+                                                 <br>
+                                                 <span>21.490.000đ</span>
+                                                 <span class="fs-6 text-success"> Giảm 20%</span>
+                                             </p>
+                                             <a href="/product" class="btn btn-primary col-md-6 offset-md-3">Xem chi tiết</a>
+                                         </div>
+                                 </div>
+                             </div>
+                         </div>
+
+                            <!--  Todo: Xóa sau khi thực hiện backend   -->
+                             <div class="col-md-3">
+                                 <div class="card">
+                                     <div class="card-body">
+                                         <img src="/img/product_img/laptop.jpg" width="100%" height="150px">
+                                         <p class="fs-5 text-center">Laptop Asus Zenbook 14 OLED Q425MA-U71TB</p>
+                                         <div class="row text-center">
+                                             <p class="fs-6 fw-bold">
+                                                 <span style="text-decoration: line-through; color: gray;">24.790.000đ</span>
+                                                 <br>
+                                                 <span>21.490.000đ</span>
+                                                 <span class="fs-6 text-success"> Giảm 20%</span>
+                                             </p>
+                                             <a class="btn btn-primary col-md-6 offset-md-3">Xem chi tiết</a>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+
+                             <div class="col-md-3">
+                                 <div class="card">
+                                     <div class="card-body">
+                                         <img src="/img/product_img/laptop.jpg" width="100%" height="150px">
+                                         <p class="fs-5 text-center">Laptop Asus Zenbook 14 OLED Q425MA-U71TB</p>
+                                         <div class="row text-center">
+                                             <p class="fs-6 fw-bold">
+                                                 <span style="text-decoration: line-through; color: gray;">24.790.000đ</span>
+                                                 <br>
+                                                 <span>21.490.000đ</span>
+                                                 <span class="fs-6 text-success"> Giảm 20%</span>
+                                             </p>
+                                             <a class="btn btn-primary col-md-6 offset-md-3">Xem chi tiết</a>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+
+
+                             <div class="col-md-3">
+                                 <div class="card">
+                                     <div class="card-body">
+                                         <img src="/img/product_img/laptop.jpg" width="100%" height="150px">
+                                         <p class="fs-5 text-center">Laptop Asus Zenbook 14 OLED Q425MA-U71TB</p>
+                                         <div class="row text-center">
+                                             <p class="fs-6 fw-bold">
+                                                 <span style="text-decoration: line-through; color: gray;">24.790.000đ</span>
+                                                 <br>
+                                                 <span>21.490.000đ</span>
+                                                 <span class="fs-6 text-success"> Giảm 20%</span>
+                                             </p>
+                                             <a class="btn btn-primary col-md-6 offset-md-3">Xem chi tiết</a>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+
+                             <!--  End -->
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </section>
+</body>
+</html>

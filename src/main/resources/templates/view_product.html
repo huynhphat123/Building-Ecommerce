@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết sản phẩm</title>
+
+    <style>
+        .rating {
+            cursor: pointer;
+        }
+
+        .star {
+            font-size: 30px; /* Kích thước sao */
+            color: lightgray; /* Màu sắc khi chưa được chọn */
+        }
+
+        .star:hover,
+        .star.selected {
+            color: gold; /* Màu sắc khi được chọn */
+        }
+
+
+    </style>
+</head>
+<body>
+<section>
+    <div class="container card-sh" style="margin-top: 70px; margin-bottom: 50px">
+        <div class="row">
+            <div class="col-md-12 p-5">
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <img src="/img/product_img/laptop.jpg" width="330px" height="400px" alt="Laptop Asus Zenbook">
+                            <div class="row mt-2">
+                                <div class="col-3 ">
+                                    <img src="/img/product_img/asus_con1.jpg" style="width: 80px; height: 80px;" class="img-fluid" alt="Hình nhỏ 1">
+                                </div>
+                                <div class="col-3 ">
+                                    <img src="/img/product_img/asus_con2.jpg"  style="width: 80px; height: 80px;"class="img-fluid" alt="Hình nhỏ 2">
+                                </div>
+                                <div class="col-3 ">
+                                    <img src="/img/product_img/asus_con3.jpg" style="width: 80px; height: 80px;" class="img-fluid" alt="Hình nhỏ 3">
+                                </div>
+                                <div class="col-3 ">
+                                    <img src="/img/product_img/asus_con4.jpg"  style="width: 80px; height: 80px;"class="img-fluid" alt="Hình nhỏ 4">
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="text-decoration-none">Laptop Asus Zenbook 14 OLED Q425MA-U71TB</h3>
+                        <p>
+                            <span>Mô tả: Đánh giá Asus Zenbook 14 OLED Q425MA-U71TB - Laptop văn phòng hiệu năng vượt trội. Asus Zenbook 14 OLED Q425MA-U71TB là sản phẩm mà Asus vừa mới tung ra thị trường năm 2024, với những cải tiến trong thiết kế và nâng cấp cấu hình, chiếc laptop này hứa hẹn sẽ đem đến làn gió mới cho giới công nghệ và người dùng.</span><br>
+                        </p>
+                        <p>
+                            <span class="fw-bold">Thông tin sản phẩm:</span><br>
+                            Trạng thái: <span class="badge bg-success">Có hàng</span><br>
+                            Danh mục: Laptop<br>
+                            Chính sách: Đổi trả trong 7 ngày
+                        </p>
+                        <p class="fs-5 fw-bold">
+                            Giá: <i class="fas fa-rupee-sign"></i>
+                            <span class="fs-6 text-decoration-line-through text-secondary">24.790.000đ</span>
+                            <span class="fs-6 text-success">21.490.000đ (Giảm 20%)</span>
+                        </p>
+
+                        <div class="row">
+                            <div class="col-md-4 text-success text-center p-2">
+                                <i class="fas fa-money-bill-wave fa-2x"></i>
+                                <p>Thanh toán khi nhận hàng</p>
+                            </div>
+                            <div class="col-md-4 text-danger text-center p-2">
+                                <i class="fas fa-undo-alt fa-2x"></i>
+                                <p>Đổi trả hàng</p>
+                            </div>
+                            <div class="col-md-4 text-primary text-center p-2">
+                                <i class="fas fa-truck-moving fa-2x"></i>
+                                <p>Miễn phí vận chuyển</p>
+                            </div>
+                        </div>
+
+                        <a href="login.jsp" class="btn btn-danger col-md-12">Thêm vào giỏ hàng</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container mt-5">
+        <h4 class="text-center">Sản phẩm tương tự</h4>
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="/img/product_img/Laptop Acer Aspire 3 Spin A3SP14-31PT-387Z.png" class="card-img-top" alt="Sản phẩm 1">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Asus Zenbook 14X OLED Q420VA | Core i7</h5>
+                        <p class="card-text">
+                            <span style="text-decoration: line-through; color: gray;">23.490.000đ</span><br>
+                            <span class="text-success">18.990.000đ</span> <span class="text-success">Giảm 19%</span>
+                        </p>
+                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="/img/product_img/laptop-asus-vivobook-14-x1404za-nk386w_4_.webp" class="card-img-top" alt="Sản phẩm 2">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Asus Zenbook UX3402ZA-KM221W | Core i7</h5>
+                        <p class="card-text">
+                            <span style="text-decoration: line-through; color: gray;">22.490.000đ</span><br>
+                            <span class="text-success">16.190.000đ</span> <span class="text-success">Giảm 28%</span>
+                        </p>
+                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="/img/product_img/ure9mdpe-817-asus-zenbook-14x-oled-q420va-core-i7-13700h-16gb-512gb-14-5-2k-oled-touch-120hz-new.jpg" class="card-img-top" alt="Sản phẩm 3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Asus Zenbook UX3402ZA | Core i5</h5>
+                        <p class="card-text">
+                            <span style="text-decoration: line-through; color: gray;">18.790.000đ</span><br>
+                            <span class="text-success">15.490.000đ</span> <span class="text-success">Giảm 18%</span>
+                        </p>
+                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="/img/product_img/laptop.jpg" class="card-img-top" alt="Sản phẩm 4">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Asus Zenbook 14X OLED Q410VA | Core i5</h5>
+                        <p class="card-text">
+                            <span style="text-decoration: line-through; color: gray;">20.490.000đ</span><br>
+                            <span class="text-success">14.990.000đ</span> <span class="text-success">Giảm 27%</span>
+                        </p>
+                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container mt-4">
+        <div class="rating-section border p-4 rounded text-center">
+            <h4>Đánh giá & Nhận xét</h4>
+            <p class="h5">0/5</p>
+            <p>0 đánh giá & nhận xét</p>
+            <div class="star-rating mb-2">
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star"></span>
+            </div>
+            <button class="btn btn-primary btn-block">Đánh giá sản phẩm này</button>
+            <p class="mt-2 text-muted">Sản phẩm này chưa có đánh giá</p>
+        </div>
+    </div>
+
+
+
+</section>
+
+</body>
+</html>

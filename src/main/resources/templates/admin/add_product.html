@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm sản phẩm</title>
+</head>
+<body>
+<section>
+    <div class="container p-5">
+        <div class="row">
+            <div class="col-md-6 mt-3 offset-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-header text-center fs-4 mt-4 fw-bold">Thêm sản phẩm mới</div>
+                    <div class="card-body">
+                        <!-- Form thêm sản phẩm mới -->
+                        <form>
+                            <div class="mb-3">
+                                <label for="title">Tên sản phẩm</label>
+                                <input type="text" name="title" id="title" class="form-control" placeholder="Nhập tên sản phẩm">
+                            </div>
+
+                            <!-- Mô tả sản phẩm -->
+                            <div class="mb-3">
+                                <label for="description">Mô tả sản phẩm</label>
+                                <textarea name="description" id="description" rows="3" class="form-control" placeholder="Nhập mô tả chi tiết sản phẩm"></textarea>
+                            </div>
+
+                            <!-- Danh mục sản phẩm -->
+                            <div class="mb-3">
+                                <label for="category">Danh mục</label>
+                                <select name="category" id="category" class="form-control">
+                                    <option value="">-- Chọn danh mục --</option>
+                                    <option value="electronics">ASUS</option>
+                                    <option value="household">MSI</option>
+                                    <option value="fashion">HP</option>
+                                    <option value="fashion">Dell</option>
+                                    <option value="fashion">Macbook</option>
+                                </select>
+                            </div>
+
+                            <!-- Giá sản phẩm -->
+                            <div class="mb-3">
+                                <label for="price">Giá sản phẩm</label>
+                                <input type="text" name="price" id="price" class="form-control" placeholder="Nhập giá sản phẩm (VNĐ)">
+                            </div>
+
+                            <!-- Tồn kho và tải ảnh -->
+                            <div class="row">
+                                <div class="mb-3 col-md-6">
+                                    <label for="stock">Tồn kho</label>
+                                    <input type="text" name="stock" id="stock" class="form-control" placeholder="Số lượng tồn kho">
+                                </div>
+
+                                <div class="mb-3 col-md-6">
+                                    <label for="image">Tải ảnh lên</label>
+                                    <input type="file" name="image" id="image" class="form-control">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary col-md-12">Thêm sản phẩm</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
