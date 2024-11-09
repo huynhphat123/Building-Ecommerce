@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm sản phẩm</title>
+</head>
+<body>
+<section>
+    <div class="container p-5">
+        <div class="row">
+            <div class="col-md-6 mt-3 offset-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-header text-center mt-4 fw-bold"><p class="fs-4">Thêm sản phẩm mới</p>
+                        <th:block th:if="${session.succMsg}">
+                            <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
+                        <th:block th:if="${session.errorMsg}">
+                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Form thêm sản phẩm mới -->
+                        <form action="/admin/saveProduct" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="title">Tên sản phẩm</label>
+                                <input type="text" name="title" id="title" class="form-control"
+                                       placeholder="Nhập tên sản phẩm">
+                            </div>
+
+                            <!-- Mô tả sản phẩm -->
+                            <div class="mb-3">
+                                <label for="description">Mô tả sản phẩm</label>
+                                <textarea name="description" id="description" rows="3" class="form-control"
+                                          placeholder="Nhập mô tả chi tiết sản phẩm"></textarea>
+                            </div>
+
+                            <!-- Danh mục sản phẩm -->
+                            <div class="mb-3">
+                                <label>Danh mục</label>
+                                <select name="category"  class="form-control">
+                                    <option value="">-- Chọn danh mục --</option>
+                                    <option th:each="c:${categories}">[[${c.name}]]</option>
+
+                                </select>
+                            </div>
+
+                            <!-- Giá sản phẩm -->
+                            <div class="mb-3">
+                                <label>Giá sản phẩm</label>
+                                <input type="text" name="price"  class="form-control"
+                                       placeholder="Nhập giá sản phẩm (VNĐ)">
+                            </div>
+
+                            <!-- Tồn kho và tải ảnh -->
+                            <div class="row">
+                                <div class="mb-3 col-md-6">
+                                    <label>Tồn kho</label>
+                                    <input type="text" name="stock"  class="form-control"
+                                           placeholder="Số lượng tồn kho">
+                                </div>
+
+                                <div class="mb-3 col-md-6">
+                                    <label>Tải ảnh lên</label>
+                                    <input type="file" name="file"  class="form-control">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary col-md-12">Thêm sản phẩm</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
