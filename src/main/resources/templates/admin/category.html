@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{base::layout(~{::section})}">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
 <head>
   <meta charset="UTF-8">
   <title>Thêm loại danh mục</title>
-
 </head>
 <body>
 <section>
@@ -14,43 +12,42 @@
       <div class="col-md-3">
         <div class="card card-sh">
           <div class="card-header text-center">
-           <p class="fs-4 fw-bold">Thêm danh mục</p>
-          <th:block th:if="${session.succMsg}">
-            <p class="text-success fw-bold">[[${session.succMsg}]]</p>
-            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-          </th:block>
+            <p class="fs-4 fw-bold">Thêm danh mục</p>
 
-           <th:block th:if="${session.errorMsg}">
+            <!-- Hiển thị thông báo thành công nếu có -->
+            <th:block th:if="${session.succMsg}">
+              <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+              <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+            </th:block>
+
+            <!-- Hiển thị thông báo lỗi nếu có -->
+            <th:block th:if="${session.errorMsg}">
               <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-             <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
-           </th:block>
-
+              <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+            </th:block>
           </div>
           <div class="card-body">
+            <!-- Form nhập thông tin danh mục mới -->
             <form action="/admin/saveCategory" method="post" enctype="multipart/form-data">
               <div class="mb-3">
                 <label for="categoryName">Tên danh mục</label>
                 <input type="text" id="categoryName" class="form-control" placeholder="Nhập tên danh mục" name="name">
               </div>
 
+              <!-- Trạng thái hoạt động -->
               <div class="mb-3">
                 <labe>Trạng thái</labe>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" checked value="true"
-                         name="isActive" id="flexRadioDefault1" >
-                  <label class="form-check-label" for="flexRadioDefault1">
-                    Chưa Active
-                  </label>
+                  <input class="form-check-input" type="radio" checked value="true" name="isActive" id="flexRadioDefault1" >
+                  <label class="form-check-label" for="flexRadioDefault1">Chưa Active</label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" value="false"
-                         name="isActive" id="flexRadioDefault2" >
-                  <label class="form-check-label" for="flexRadioDefault2">
-                    Đã Active
-                  </label>
+                  <input class="form-check-input" type="radio" value="false" name="isActive" id="flexRadioDefault2" >
+                  <label class="form-check-label" for="flexRadioDefault2">Đã Active</label>
                 </div>
               </div>
 
+              <!-- Tải lên hình ảnh danh mục -->
               <div class="mb-3">
                 <label for="categoryImage">Tải lên hình ảnh</label>
                 <input type="file" name="file" id="categoryImage" class="form-control">
@@ -60,7 +57,8 @@
           </div>
         </div>
       </div>
-      <!-- Bảng hiển thị danh mục -->
+
+      <!-- Bảng hiển thị các danh mục -->
       <div class="col-md-8">
         <div class="card shadow-sm">
           <div class="card-header text-center fs-4 fw-bold">Xem chi tiết danh mục</div>
@@ -75,18 +73,23 @@
                 <th scope="col">Hoạt động</th>
               </tr>
               </thead>
-                <tbody>
-                <tr th:each="cat,c:${categorys}">
-                  <th scope="row">[[${c.count}]]</th>
-                  <td>[[${cat.name}]]</td>
-                  <td>[[${cat.isActive}]]</td>
-                  <td><img th:src="@{'/img/category_img/'+${cat.imageName}}" width="50px" height="50px"></td>
-                  <td>
-                    <a th:href="@{'/admin/loadEditCategory/' + ${cat.id}}"  class="btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square fa-1x"></i> Chỉnh sửa</a>
-                    <a th:href="@{'/admin/deleteCategory/'+${cat.id}}"  class="btn btn-danger btn-sm"><i class="fa-solid fa-trash fa-1x"></i> Xóa</a>
-                  </td>
-                </tr>
-                </tbody>
+              <tbody>
+              <tr th:each="cat,c:${categorys}">
+                <th scope="row">[[${c.count}]]</th>
+                <td>[[${cat.name}]]</td>
+                <td>[[${cat.isActive}]]</td>
+                <td><img th:src="@{'/img/category_img/'+${cat.imageName}}" width="50px" height="50px"></td>
+                <td>
+                  <!-- Chỉnh sửa và xóa danh mục -->
+                  <a th:href="@{'/admin/loadEditCategory/' + ${cat.id}}"  class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-pen-to-square fa-1x"></i> Chỉnh sửa
+                  </a>
+                  <a th:href="@{'/admin/deleteCategory/'+${cat.id}}"  class="btn btn-danger btn-sm">
+                    <i class="fa-solid fa-trash fa-1x"></i> Xóa
+                  </a>
+                </td>
+              </tr>
+              </tbody>
             </table>
           </div>
         </div>

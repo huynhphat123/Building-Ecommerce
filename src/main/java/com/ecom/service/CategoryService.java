@@ -22,4 +22,5 @@ public interface CategoryService {
     // Lấy danh mục theo ID
     public Category getCategoryById(int id);
 
+    public List<Category> getAllActiveCategory();
 }

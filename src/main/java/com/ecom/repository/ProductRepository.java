@@ -1,4 +1,11 @@
 package com.ecom.repository;
 
-public interface productRepository {
+import com.ecom.model.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+// Các phương thức truy vấn cơ bản của Spring Data JPA
+public interface ProductRepository extends JpaRepository<Product, Integer> {
+    List<Product> findByIsActiveTrue();
 }

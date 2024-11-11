@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{base::layout(~{::section})}">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>Chỉnh sửa danh mục</title>
-
 </head>
 <body>
 <section>
     <div class="container-fluid p-5 mt-5">
         <div class="row">
-            <!-- Form thêm danh mục -->
+            <!-- Form chỉnh sửa danh mục -->
             <div class="col-md-3 offset-md-5">
                 <div class="card card-sh">
                     <div class="card-header text-center">
                         <p class="fs-4 fw-bold">Chỉnh sửa danh mục</p>
+                        <!-- Hiển thị thông báo thành công và lỗi nếu có -->
                         <th:block th:if="${session.succMsg}">
                             <p class="text-success fw-bold">[[${session.succMsg}]]</p>
                             <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
@@ -24,33 +23,32 @@
                             <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
                             <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                         </th:block>
-
                     </div>
                     <div class="card-body">
+                        <!-- Form nhập lại thông tin để chỉnh sửa danh mục -->
                         <form action="/admin/updateCategory" method="post" enctype="multipart/form-data">
-                            <input type="hidden" name="id" th:value="${category.id}">                            <div class="mb-3">
+                            <input type="hidden" name="id" th:value="${category.id}">
+                            <div class="mb-3">
                                 <label for="categoryName">Nhập danh mục</label>
                                 <input type="text" id="categoryName" class="form-control" placeholder="Nhập tên danh mục" name="name" th:value="${category.name}">
                             </div>
 
+                            <!-- Trạng thái của danh mục -->
                             <div class="mb-3">
                                 <labe>Trạng thái</labe>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" th:checked="${category.isActive==true}" value="true"
-                                           name="isActive" id="flexRadioDefault1" >
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        Chưa Active
-                                    </label>
+                                    <input class="form-check-input" type="radio" th:checked="${category.isActive==true}"
+                                           value="true" name="isActive" id="flexRadioDefault1" >
+                                    <label class="form-check-label" for="flexRadioDefault1">Chưa Active</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" value="false" th:checked="${category.isActive==false}"
                                            name="isActive" id="flexRadioDefault2" >
-                                    <label class="form-check-label" for="flexRadioDefault2">
-                                        Đã Active
-                                    </label>
+                                    <label class="form-check-label" for="flexRadioDefault2">Đã Active</label>
                                 </div>
                             </div>
 
+                            <!-- Tải lại hình ảnh -->
                             <div class="mb-3">
                                 <label for="categoryImage">Tải lên hình ảnh</label>
                                 <input type="file" name="file" id="categoryImage" class="form-control">

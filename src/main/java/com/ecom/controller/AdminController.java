@@ -1,7 +1,9 @@
 package com.ecom.controller;
 
 import com.ecom.model.Category;
+import com.ecom.model.Product;
 import com.ecom.service.CategoryService;
+import com.ecom.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 // Controller xử lý các yêu cầu từ admin về danh mục sản phẩm
 @Controller
@@ -26,13 +29,18 @@ public class AdminController {
     @Autowired
     private CategoryService categoryService; // Inject CategoryService vào Controller
 
+    @Autowired
+    private ProductService productService;
+
     @GetMapping("/")
     public String index() {
         return "admin/index"; // Trả về view trang chủ admin
     }
 
     @GetMapping("/loadAddProduct")
-    public String loadAddProduct() {
+    public String loadAddProduct(Model model) {
+        List<Category> categories = categoryService.getAllCategory();
+        model.addAttribute("categories", categories);
         return "admin/add_product"; // Trả về view để thêm sản phẩm
     }
 
@@ -111,4 +119,89 @@ public class AdminController {
 
         return "redirect:/admin/category"; // Quay lại trang danh mục
     }
+    // Xử lý yêu cầu thêm sản phẩm
+    @PostMapping("/saveProduct")
+    public String saveProduct(@ModelAttribute Product product,@RequestParam("file") MultipartFile image, HttpSession session) throws IOException{
+        // Kiểm tra nếu không có hình ảnh, sử dụng hình ảnh mặc định
+        String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
+
+        // Gán tên hình ảnh vào sản phẩ
+        product.setImage(imageName);
+        product.setDiscount(0);
+        product.setDiscountPrice(product.getPrice());
+
+        // Lưu sản phẩm vào cơ sở dữ liệu
+        Product saveProduct = productService.saveProduct(product);
+
+        if (!ObjectUtils.isEmpty(saveProduct)) {
+
+            // Nếu sản phẩm lưu thành công, lưu hình ảnh vào thư mục
+            File saveFile = new ClassPathResource("static/img").getFile();
+
+            Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
+                    + image.getOriginalFilename());
+
+            Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+            // Thông báo thành công
+            session.setAttribute("succMsg", "Sản phẩm đã lưu thành công");
+        } else {
+            // Thông báo lỗi nếu không thành công
+            session.setAttribute("errorMsg", "Sản phẩm lưu thất bại");
+        }
+
+        // Chuyển hướng đến trang thêm sản phẩm
+        return "redirect:/admin/loadAddProduct";
+    }
+
+    // Xử lý yêu cầu xem danh sách sản phẩm
+    @GetMapping("/products")
+    public String loadViewProduct(Model model) {
+        model.addAttribute("products", productService.getAllProducts());
+        return "admin/products";  // quay lại trang sản phẩm
+    }
+    // Xử lý yêu cầu xóa sản phẩm
+    @GetMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable int id, HttpSession session) {
+        // Gọi dịch vụ để xóa sản phẩm
+        Boolean deleteProduct = productService.deleteProduct(id);
+        if (deleteProduct) {
+            // Thông báo thành công khi xóa
+            session.setAttribute("succMsg", "Xóa sản phẩm thành công");
+        } else {
+            // Thông báo lỗi nếu xóa không thành công
+            session.setAttribute("errorMsg", "Xóa sản phẩm không thành công");
+        }
+        // Chuyển hướng về danh sách sản phẩm
+        return "redirect:/admin/products";
+    }
+
+    // Xử lý yêu cầu chỉnh sửa sản phẩm
+    @GetMapping("/editProduct/{id}")
+    public String editProduct(@PathVariable int id, Model model) {
+        model.addAttribute("product", productService.getProductById(id));
+        model.addAttribute("categories", categoryService.getAllCategory());
+        return "admin/edit_product";
+    }
+
+    // Xử lý yêu cầu cập nhật sản phẩm
+    @PostMapping("/updateProduct")
+    public String updateProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image,
+                                HttpSession session, Model model) {
+
+            if(product.getDiscount() < 0 || product.getDiscount() > 100) {
+                session.setAttribute("errorMsg", "Giảm giá không hợp lệ");
+            } else {
+                // Cập nhật sản phẩm với hình ảnh mới nếu có
+                Product updateProduct = productService.updateProduct(product, image);
+                if (!ObjectUtils.isEmpty(updateProduct)) {
+                    session.setAttribute("succMsg", "Sản phẩm thay đổi thành công");
+                } else {
+                    session.setAttribute("errorMsg", "Sản phẩm thay đổi không thành công");
+                }
+            }
+        // Chuyển hướng về trang chỉnh sửa sản phẩm
+        return "redirect:/admin/editProduct/" + product.getId();
+    }
+
 }

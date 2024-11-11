@@ -3,15 +3,15 @@
       th:replace="~{base::layout(~{::section})}">
 <head>
     <meta charset="UTF-8">
-    <title>Thêm sản phẩm</title>
+    <title>Chỉnh sửa sản phẩm</title>
 </head>
 <body>
 <section>
-    <div class="container p-5">
+    <div class="container p-5 mt-3">
         <div class="row">
-            <div class="col-md-6 mt-3 offset-md-3">
+            <div class="col-md-8 offset-md-2">
                 <div class="card shadow-sm">
-                    <div class="card-header text-center mt-4 fw-bold"><p class="fs-4">Thêm sản phẩm mới</p>
+                    <div class="card-header text-center mt-4 fw-bold"><p class="fs-4">Chỉnh sửa sản phẩm</p>
                         <th:block th:if="${session.succMsg}">
                             <p class="text-success fw-bold">[[${session.succMsg}]]</p>
                             <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
@@ -24,36 +24,69 @@
                     </div>
 
                     <div class="card-body">
-                        <!-- Form thêm sản phẩm mới -->
-                        <form action="/admin/saveProduct" method="post" enctype="multipart/form-data">
+                        <!-- Form thay đổi sản phẩm mới -->
+                        <form action="/admin/updateProduct" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="id" th:value="${product.id}">
                             <div class="mb-3">
                                 <label for="title">Tên sản phẩm</label>
                                 <input type="text" name="title" id="title" class="form-control"
-                                       placeholder="Nhập tên sản phẩm">
+                                       placeholder="Nhập tên sản phẩm" th:value="${product.title}">
                             </div>
 
                             <!-- Mô tả sản phẩm -->
                             <div class="mb-3">
                                 <label for="description">Mô tả sản phẩm</label>
                                 <textarea name="description" id="description" rows="3" class="form-control"
-                                          placeholder="Nhập mô tả chi tiết sản phẩm"></textarea>
+                                          placeholder="Nhập mô tả chi tiết sản phẩm">[[${product.description}]]</textarea>
                             </div>
 
+                            <div class="row">
                             <!-- Danh mục sản phẩm -->
-                            <div class="mb-3">
+                            <div class="mb-3 col">
                                 <label>Danh mục</label>
                                 <select name="category"  class="form-control">
-                                    <option value="">-- Chọn danh mục --</option>
+                                    <option value="">[[${product.category}]]</option>
                                     <option th:each="c:${categories}">[[${c.name}]]</option>
 
                                 </select>
                             </div>
+                                <!-- Giá sản phẩm -->
+                                <div class="mb-3 col">
+                                    <label>Giá sản phẩm</label>
+                                    <input type="text" name="price"  class="form-control"
+                                           placeholder="Nhập giá sản phẩm (VNĐ)" th:value="${product.price}">
+                                </div>
+                    </div>
 
-                            <!-- Giá sản phẩm -->
+                            <div class="row">
+                                <!-- Giảm giá -->
+                                <div class="mb-3 col">
+                                    <label>Giảm giá</label>
+                                    <input type="number" name="discount"  class="form-control"
+                                            th:value="${product.discount}">
+
+                                </div>
+                                <!-- Giá sau khi giảm -->
+                                <div class="mb-3 col">
+                                    <label>Giá sau khi giảm</label>
+                                    <input type="number"  class="form-control" readonly
+                                            th:value="${product.discountPrice}">
+                                </div>
+                            </div>
+
+                            <!-- Trạng thái hoạt động -->
                             <div class="mb-3">
-                                <label>Giá sản phẩm</label>
-                                <input type="text" name="price"  class="form-control"
-                                       placeholder="Nhập giá sản phẩm (VNĐ)">
+                                <labe>Trạng thái</labe>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" th:checked="${product.isActive==true}"
+                                           value="true" name="isActive" id="flexRadioDefault1" >
+                                    <label class="form-check-label" for="flexRadioDefault1">Chưa Active</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" th:checked="${product.isActive==false}"
+                                           value="false" name="isActive" id="flexRadioDefault2" >
+                                    <label class="form-check-label" for="flexRadioDefault2">Đã Active</label>
+                                </div>
                             </div>
 
                             <!-- Tồn kho và tải ảnh -->
@@ -61,16 +94,21 @@
                                 <div class="mb-3 col-md-6">
                                     <label>Tồn kho</label>
                                     <input type="text" name="stock"  class="form-control"
-                                           placeholder="Số lượng tồn kho">
+                                           placeholder="Số lượng tồn kho" th:value="${product.stock}">
                                 </div>
 
                                 <div class="mb-3 col-md-6">
                                     <label>Tải ảnh lên</label>
                                     <input type="file" name="file"  class="form-control">
                                 </div>
+
+                                <div class="mt-2">
+                                    <img th:src="@{'/img/product_img/'+${product.image}}"
+                                         width="100px" height="100px">
+                                </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary col-md-12">Thêm sản phẩm</button>
+                            <button type="submit" class="btn btn-primary col-md-12">Thay đổi</button>
                         </form>
 
                     </div>
