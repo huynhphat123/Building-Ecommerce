@@ -17,54 +17,63 @@
                     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
                         <div class="card-header">
                             <p class="fs-4 text-center register-title text-primary">Đăng ký tài khoản</p>
+                            <!-- Thông báo thành công hoặc lỗi -->
+                            <th:block th:if="${session.succMsg}">
+                                <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+                            </th:block>
+
+                            <th:block th:if="${session.errorMsg}">
+                                <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                            </th:block>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form action="/saveUser" enctype="multipart/form-data" method="post">
 
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Họ và Tên</label>
-                                        <input class="form-control" name="email" type="text">
+                                        <input class="form-control" name="name" type="text" required>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Số điện thoại</label>
-                                        <input class="form-control" name="mobileNumber" type="number">
+                                        <input class="form-control" name="number" type="number" required>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Email</label>
-                                    <input class="form-control" name="email" type="email">
+                                    <input class="form-control" name="email" type="email" required>
                                 </div>
 
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Địa chỉ</label>
-                                            <input class="form-control" name="address" type="text">
+                                            <input class="form-control" name="address" type="text" required>
                                 </div>
 
                                 <div class="mb-3">
                                         <label class="form-label">Chọn/tỉnh thành phố</label>
-                                            <input class="form-control" name="city" type="text">
+                                            <input class="form-control" name="city" type="text" required>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col">
-                                        <label class="form-label">Mật khẩu</label>
-                                        <input class="form-control" name="password" type="password">
-                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">Mật khẩu</label>
+                                            <input class="form-control" name="password" type="password" required>
+                                        </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">Nhập lại mật khẩu</label>
-                                        <input class="form-control" name="password" type="password">
+                                        <div class="mb-3">
+                                            <label class="form-label">Nhập lại mật khẩu</label>
+                                            <input class="form-control" name="confirmpassword" type="password" required>
+                                        </div>
                                     </div>
-                                </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Tải ảnh</label>
-                                    <input class="form-control" name="profile_image" type="file">
+                                    <input class="form-control" name="img" type="file" required>
                                 </div>
 
 
