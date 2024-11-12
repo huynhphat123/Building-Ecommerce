@@ -8,4 +8,6 @@ import java.util.List;
 // Các phương thức truy vấn cơ bản của Spring Data JPA
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findByIsActiveTrue();
+
+    List<Product> findByCategory(String category);
 }

@@ -22,5 +22,5 @@ public interface ProductService {
     // Cập nhật thông tin sản phẩm
     public Product updateProduct(Product product, MultipartFile file);
 
-    public List<Product> getAllActiveProducts();
+    public List<Product> getAllActiveProducts(String category);
 }
