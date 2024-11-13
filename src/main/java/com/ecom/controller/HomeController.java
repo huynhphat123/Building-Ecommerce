@@ -40,7 +40,7 @@ public class HomeController {
         return "index"; // Trả về index.html trong /templates/
     }
 
-    @GetMapping("/login")
+    @GetMapping("/signin")
     public String login() {
         return "login"; // Trả về login.html trong /templates/
     }
@@ -76,26 +76,38 @@ public class HomeController {
     @PostMapping("/saveUser")
     public String userUser(@ModelAttribute UserDtls userDtls, @RequestParam("img") MultipartFile file, HttpSession session) throws IOException {
 
+        // Kiểm tra nếu file ảnh được tải lên trống, đặt tên ảnh mặc định là "default.jpg"
         String imageName =  file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+
+        // Gán tên file ảnh vào thuộc tính profileImage của đối tượng userDtls
         userDtls.setProfileImage(imageName);
+
+        // Lưu thông tin người dùng
         UserDtls saveUser = userService.saveUser(userDtls);
 
+        // Nếu người dùng được lưu thành công
         if(!ObjectUtils.isEmpty(saveUser))
         {
+            // Nếu file ảnh không trống
             if(!file.isEmpty())
             {
+                // Lấy đường dẫn của thư mục chứa ảnh trong dự án
                 File saveFile = new ClassPathResource("static/img").getFile();
 
+                // Tạo đường dẫn nơi lưu ảnh đại diện của người dùng
                 Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
                         + file.getOriginalFilename());
 
+                // Sao chép file ảnh từ InputStream vào đường dẫn chỉ định
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             }
+            // Đặt thông báo thành công vào session
             session.setAttribute("succMsg", "Đăng ký thành công");
         } else {
+            // Đặt thông báo lỗi vào session nếu không lưu được
             session.setAttribute("errorMsg", "Đăng ký thất bại");
         }
-
+        // Redirect người dùng về trang đăng ký
         return "redirect:/register";
     }
 }

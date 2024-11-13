@@ -30,12 +30,18 @@
                     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
                         <div class="card-header">
                             <p class="fs-4 text-center login-title text-primary">Đăng nhập tài khoản</p>
+                            <div th:if="${param.error}" class="alert alert-danger">
+                                Email hoặc mật khẩu không hợp lệ
+                            </div>
+                            <div th:if="${param.logout}" class="alert alert-success">
+                                Đăng xuất thành công
+                            </div>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form action="/login" method="post">
                                 <div class="mb-3">
                                     <label class="form-label">Email</label>
-                                    <input class="form-control" name="email" type="email" required  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                    <input class="form-control" name="username" type="email" required  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                            title="Vui lòng nhập địa chỉ email hợp lệ.">
 
                                 </div>
