@@ -2,8 +2,10 @@ package com.ecom.controller;
 
 import com.ecom.model.Category;
 import com.ecom.model.Product;
+import com.ecom.model.UserDtls;
 import com.ecom.service.CategoryService;
 import com.ecom.service.ProductService;
+import com.ecom.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -19,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 // Controller xử lý các yêu cầu từ admin về danh mục sản phẩm
@@ -31,6 +34,20 @@ public class AdminController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserService userService;
+
+    @ModelAttribute
+    public void getUserDetails(Principal p, Model model) {
+        if (p != null) {
+            String email = p.getName();
+            UserDtls userDtls = userService.getUserByEmail(email);
+            model.addAttribute("user", userDtls);
+        }
+        List<Category> allActiveCategory = categoryService.getAllActiveCategory();
+        model.addAttribute("categorys", allActiveCategory);
+    }
 
     @GetMapping("/")
     public String index() {
@@ -204,4 +221,20 @@ public class AdminController {
         return "redirect:/admin/editProduct/" + product.getId();
     }
 
+    @GetMapping("/users")
+    public String getAllUsers(Model model) {
+        List<UserDtls> users = userService.getUsers("ROLE_USER");
+        model.addAttribute("users", users);
+        return "/admin/users";
+    }
+    @GetMapping("/updateStatus")
+    public String updateUsAccountStatus(@RequestParam Boolean status, @RequestParam Integer id, HttpSession session) {
+        Boolean f = userService.updateAccountStatus(id, status);
+        if (f) {
+            session.setAttribute("succMsg", "Trạng thái tài khoản đã được cập nhật");
+        } else {
+            session.setAttribute("errorMsg", "Có lỗi xảy ra ");
+        }
+        return "redirect:/admin/users";
+    }
 }

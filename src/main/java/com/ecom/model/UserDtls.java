@@ -23,11 +23,23 @@ public class UserDtls {
     private Integer id;
 
     private String name;          // Tên người dùng
+
     private String number;        // Số điện thoại
+
     private String email;         // Email của người dùng
+
     private String address;       // Địa chỉ
+
     private String city;          // Thành phố
+
     private String password;      // Mật khẩu của người dùng
+
     private String profileImage;  // Tên file ảnh đại diện của người dùng
+
     private String role;
+
+    private  Boolean isEnable;
+
+
+
 }

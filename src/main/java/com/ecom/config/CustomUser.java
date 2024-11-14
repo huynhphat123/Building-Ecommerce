@@ -18,8 +18,10 @@ public class CustomUser implements UserDetails {
         this.user = user;
     }
 
+    // Lấy ra quyền hạn (vai trò) của người dùng (ROLE_USER hoặc ROLE_ADMIN)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Đặt vai trò của người dùng từ thông tin được lưu trong database
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
         return Arrays.asList(authority);
     }
@@ -34,6 +36,7 @@ public class CustomUser implements UserDetails {
         return user.getEmail();
     }
 
+    // Các phương thức kiểm tra trạng thái tài khoản (không hết hạn, không bị khóa, v.v.)
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -51,6 +54,8 @@ public class CustomUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.getIsEnable();
     }
 }
+
+

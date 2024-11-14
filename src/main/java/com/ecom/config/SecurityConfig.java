@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,17 +18,19 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
 
-
+    // Bean mã hóa mật khẩu
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Cấu hình dịch vụ UserDetails để lấy thông tin người dùng từ database
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
     }
 
+    // Cấu hình phương thức xác thực sử dụng DaoAuthenticationProvider
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -36,6 +39,7 @@ public class SecurityConfig {
         return authenticationProvider;
     }
 
+    // Cấu hình bảo mật
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
@@ -45,10 +49,11 @@ public class SecurityConfig {
                         .requestMatchers("/**").permitAll())
                 .formLogin(form->form.loginPage("/signin")
                         .loginProcessingUrl("/login")
-//                        .failureHandler(authenticationFailureHandler)
+                        //.failureHandler(authenticationFailureHandler)
                         .successHandler(authenticationSuccessHandler))
                 .logout(logout->logout.permitAll());
 
         return http.build();
     }
 }
+
