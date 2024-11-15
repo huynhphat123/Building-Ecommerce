@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 // Các annotation của Lombok để tự động sinh constructor, getter và setter cho class này
 @AllArgsConstructor   // Tự động sinh constructor có đầy đủ tham số
 @NoArgsConstructor    // Tự động sinh constructor không tham số
@@ -38,7 +40,13 @@ public class UserDtls {
 
     private String role;
 
-    private  Boolean isEnable;
+    private Boolean isEnable;           // Trạng thái hoạt động của tài khoản
+
+    private Boolean accountNonLocked;   // Trạng thái khóa tài khoản (true nếu chưa bị khóa)
+
+    private Integer faildAttempts;      // Số lần nhập mật khẩu sai
+
+    private Date lockTime;              // Thời gian bắt đầu khóa tài khoản
 
 
 
