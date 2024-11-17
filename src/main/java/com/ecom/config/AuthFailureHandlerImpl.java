@@ -58,7 +58,7 @@ public class AuthFailureHandlerImpl extends SimpleUrlAuthenticationFailureHandle
                 exception = new LockedException("Tài khoản của bạn không hoạt động");
             }
         } else {
-            exception = new LockedException("Email hoặc mật khẩu không hợp lệ");
+            exception = new LockedException("Email hoặc mật khẩu không hợp lệ. Vui lòng thử lại.");
         }
 
         // Thiết lập URL trả về khi đăng nhập thất bại

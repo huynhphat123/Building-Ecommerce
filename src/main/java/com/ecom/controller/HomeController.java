@@ -6,9 +6,14 @@ import com.ecom.model.UserDtls;
 import com.ecom.service.CategoryService;
 import com.ecom.service.ProductService;
 import com.ecom.service.UserService;
+import com.ecom.util.CommonUtil;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -17,12 +22,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class HomeController {
@@ -35,6 +42,11 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommonUtil commonUtil;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @ModelAttribute
     public void getUserDetails(Principal p, Model model) {
@@ -122,5 +134,64 @@ public class HomeController {
         }
         // Redirect người dùng về trang đăng ký
         return "redirect:/register";
+    }
+
+    // Forgot Password code
+    @GetMapping("/forgot-password")
+    public String showForgotPassword() {
+        return "forgot_password.html";
+    }
+
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(@RequestParam String email, HttpSession session, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+
+        UserDtls userByEmail = userService.getUserByEmail(email);
+        if (ObjectUtils.isEmpty(userByEmail)) {
+            session.setAttribute("errorMsg", "Email không tồn tại");
+        } else {
+
+            String resetToken = UUID.randomUUID().toString();
+            userService.updateUserResetToken(email,resetToken);
+
+            // Generate URL:http://localhost:8081/reset-password?token=sdaskdjaskjdaksjdas
+            String url = CommonUtil.generateUrl(request) + "/reset-password?token=" + resetToken;
+
+            Boolean sendMail = commonUtil.sendMail(url,email);
+            if (sendMail) {
+                session.setAttribute("succMsg", "Vui lòng kiểm tra email của bạn. Đường dẫn đặt lại mật khẩu đã được gửi");
+            } else {
+                session.setAttribute("errorMsg", "Có lỗi xảy ra trên máy chủ | Email không được gửi");
+            }
+        }
+        return "redirect:/forgot-password";
+
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPassword(@RequestParam String token, HttpSession session, Model model) {
+        UserDtls userByToken = userService.getUserByToken(token);
+
+        if (userByToken == null) {
+            model.addAttribute("errorMsg", "Liên kết của bạn không hợp lệ hoặc đã hết hạn");
+            return "message";
+        }
+        model.addAttribute("token", token);
+        return "reset_password";
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestParam String token, @RequestParam String password, HttpSession session, Model model) {
+
+        UserDtls userByToken = userService.getUserByToken(token);
+        if (userByToken == null) {
+            model.addAttribute("errorMsg", "Liên kết của bạn không hợp lệ hoặc đã hết hạn");
+            return "message";
+        } else {
+            userByToken.setPassword(passwordEncoder.encode(password));
+            userByToken.setResetToken(null);
+            userService.updateUser(userByToken);
+            model.addAttribute("msg", "Đổi mật khẩu thành công");
+            return "message";
+        }
     }
 }

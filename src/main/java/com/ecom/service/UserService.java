@@ -29,4 +29,11 @@ public interface UserService {
 
     // Đặt lại số lần nhập sai của người dùng về 0
     public void resetAttempt(int userId);
+
+
+    void updateUserResetToken(String email, String resetToken);
+
+    public UserDtls getUserByToken(String token);
+
+    public UserDtls updateUser(UserDtls user);
 }

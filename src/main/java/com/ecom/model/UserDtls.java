@@ -48,6 +48,8 @@ public class UserDtls {
 
     private Date lockTime;              // Thời gian bắt đầu khóa tài khoản
 
+    private String resetToken;
+
 
 
 }
