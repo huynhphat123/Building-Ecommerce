@@ -1,8 +1,8 @@
-package com.ecom.service;
+package com.ecom.service.impl;
 
-import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.repository.ProductRepository;
+import com.ecom.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;

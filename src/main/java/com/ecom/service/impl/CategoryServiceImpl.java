@@ -1,10 +1,10 @@
-package com.ecom.service;
+package com.ecom.service.impl;
 
 import com.ecom.model.Category;
 import com.ecom.repository.CategoryRepository;
+import com.ecom.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 

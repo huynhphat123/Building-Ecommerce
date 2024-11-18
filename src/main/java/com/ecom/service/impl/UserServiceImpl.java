@@ -1,7 +1,8 @@
-package com.ecom.service;
+package com.ecom.service.impl;
 
 import com.ecom.model.UserDtls;
 import com.ecom.repository.UserReponsitory;
+import com.ecom.service.UserService;
 import com.ecom.util.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
