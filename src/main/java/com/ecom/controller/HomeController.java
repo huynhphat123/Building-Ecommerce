@@ -36,33 +36,35 @@ import java.util.UUID;
 public class HomeController {
 
     @Autowired
-    private CategoryService categoryService;
+    private CategoryService categoryService;  // Dịch vụ xử lý các danh mục sản phẩm
 
     @Autowired
-    private ProductService productService;
+    private ProductService productService;  // Dịch vụ xử lý các sản phẩm
 
     @Autowired
-    private UserService userService;
+    private UserService userService;  // Dịch vụ xử lý người dùng
 
     @Autowired
-    private CommonUtil commonUtil;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private CommonUtil commonUtil;  // Các hàm tiện ích chung
 
     @Autowired
-    private CartService cartService;
+    private BCryptPasswordEncoder passwordEncoder;  // Mã hóa mật khẩu
 
+    @Autowired
+    private CartService cartService;  // Dịch vụ xử lý giỏ hàng
+
+    // Phương thức @ModelAttribute để lấy thông tin người dùng và danh mục
     @ModelAttribute
     public void getUserDetails(Principal p, Model model) {
-        if (p != null) {
-            String email = p.getName();
-            UserDtls userDtls = userService.getUserByEmail(email);
-            model.addAttribute("user", userDtls);
-            Integer countCart = cartService.getCountCart(userDtls.getId());
-            model.addAttribute("countCart", countCart);
+        if (p != null) {  // Kiểm tra xem người dùng đã đăng nhập chưa
+            String email = p.getName();  // Lấy email người dùng từ Principal
+            UserDtls userDtls = userService.getUserByEmail(email);  // Lấy thông tin người dùng từ email
+            model.addAttribute("user", userDtls);  // Thêm thông tin người dùng vào model
+            Integer countCart = cartService.getCountCart(userDtls.getId());  // Lấy số lượng sản phẩm trong giỏ hàng
+            model.addAttribute("countCart", countCart);  // Thêm số lượng giỏ hàng vào model
         }
-        List<Category> allActiveCategory = categoryService.getAllActiveCategory();
-        model.addAttribute("categorys", allActiveCategory);
+        List<Category> allActiveCategory = categoryService.getAllActiveCategory();  // Lấy danh sách danh mục
+        model.addAttribute("categorys", allActiveCategory);  // Thêm danh mục vào model
     }
 
     @GetMapping("/")
@@ -83,18 +85,19 @@ public class HomeController {
 
     @GetMapping("/products")
     public String products(Model model, @RequestParam(value = "category",defaultValue = "") String category) {
-        List<Category> categories = categoryService.getAllActiveCategory();
-        List<Product> products = productService.getAllActiveProducts(category);
-        model.addAttribute("categories", categories);
-        model.addAttribute("products", products);
-        model.addAttribute("paramValue",category);
+        List<Category> categories = categoryService.getAllActiveCategory();  // Lấy danh sách danh mục
+        List<Product> products = productService.getAllActiveProducts(category);  // Lấy danh sách sản phẩm theo danh mục
+        model.addAttribute("categories", categories);  // Thêm danh mục vào model
+        model.addAttribute("products", products);  // Thêm sản phẩm vào model
+        model.addAttribute("paramValue", category);  // Thêm giá trị danh mục vào model
+
         return "product"; // Trả về product.html trong /templates/
     }
 
     @GetMapping("/product/{id}")
     public String product(@PathVariable int id,Model model) {
-        Product productById = productService.getProductById(id);
-        model.addAttribute("product", productById);
+        Product productById = productService.getProductById(id);  // Lấy sản phẩm theo id
+        model.addAttribute("product", productById);  // Thêm sản phẩm vào model
         return "view_product"; // Trả về product.html trong /templates/
     }
 
@@ -150,53 +153,48 @@ public class HomeController {
     @PostMapping("/forgot-password")
     public String processForgotPassword(@RequestParam String email, HttpSession session, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
 
-        UserDtls userByEmail = userService.getUserByEmail(email);
+        UserDtls userByEmail = userService.getUserByEmail(email);  // Lấy người dùng theo email
         if (ObjectUtils.isEmpty(userByEmail)) {
-            session.setAttribute("errorMsg", "Email không tồn tại");
+            session.setAttribute("errorMsg", "Email không tồn tại");  // Thông báo lỗi nếu email không tồn tại
         } else {
+            String resetToken = UUID.randomUUID().toString();  // Tạo token đặt lại mật khẩu
+            userService.updateUserResetToken(email, resetToken);  // Cập nhật token cho người dùng
+            String url = CommonUtil.generateUrl(request) + "/reset-password?token=" + resetToken;  // Tạo URL đặt lại mật khẩu
 
-            String resetToken = UUID.randomUUID().toString();
-            userService.updateUserResetToken(email,resetToken);
-
-            // Generate URL:http://localhost:8081/reset-password?token=sdaskdjaskjdaksjdas
-            String url = CommonUtil.generateUrl(request) + "/reset-password?token=" + resetToken;
-
-            Boolean sendMail = commonUtil.sendMail(url,email);
+            Boolean sendMail = commonUtil.sendMail(url, email);  // Gửi email với đường dẫn đặt lại mật khẩu
             if (sendMail) {
                 session.setAttribute("succMsg", "Vui lòng kiểm tra email của bạn. Đường dẫn đặt lại mật khẩu đã được gửi");
             } else {
                 session.setAttribute("errorMsg", "Có lỗi xảy ra trên máy chủ | Email không được gửi");
             }
         }
-        return "redirect:/forgot-password";
-
+        return "redirect:/forgot-password";  // Chuyển hướng về trang quên mật khẩu
     }
 
     @GetMapping("/reset-password")
     public String showResetPassword(@RequestParam String token, HttpSession session, Model model) {
-        UserDtls userByToken = userService.getUserByToken(token);
-
+        UserDtls userByToken = userService.getUserByToken(token);  // Lấy người dùng theo token
         if (userByToken == null) {
             model.addAttribute("errorMsg", "Liên kết của bạn không hợp lệ hoặc đã hết hạn");
-            return "message";
+            return "message";  // Nếu token không hợp lệ, hiển thị thông báo lỗi
         }
-        model.addAttribute("token", token);
-        return "reset_password";
+        model.addAttribute("token", token);  // Thêm token vào model
+        return "reset_password";  // Trả về trang reset_password.html
     }
 
     @PostMapping("/reset-password")
     public String resetPassword(@RequestParam String token, @RequestParam String password, HttpSession session, Model model) {
 
-        UserDtls userByToken = userService.getUserByToken(token);
+        UserDtls userByToken = userService.getUserByToken(token);  // Lấy người dùng theo token
         if (userByToken == null) {
             model.addAttribute("errorMsg", "Liên kết của bạn không hợp lệ hoặc đã hết hạn");
-            return "message";
+            return "message";  // Nếu token không hợp lệ, hiển thị thông báo lỗi
         } else {
-            userByToken.setPassword(passwordEncoder.encode(password));
-            userByToken.setResetToken(null);
-            userService.updateUser(userByToken);
-            model.addAttribute("msg", "Đổi mật khẩu thành công");
-            return "message";
+            userByToken.setPassword(passwordEncoder.encode(password));  // Mã hóa mật khẩu mới
+            userByToken.setResetToken(null);  // Xóa token sau khi đã reset mật khẩu
+            userService.updateUser(userByToken);  // Cập nhật thông tin người dùng
+            model.addAttribute("msg", "Đổi mật khẩu thành công");  // Thông báo thành công
+            return "message";  // Trả về trang message.html
         }
     }
 }

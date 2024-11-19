@@ -45,9 +45,8 @@
                             <div class="mb-3 col">
                                 <label>Danh mục</label>
                                 <select name="category"  class="form-control">
-                                    <option value="">[[${product.category}]]</option>
+                                    <option>[[${product.category}]]</option>
                                     <option th:each="c:${categories}">[[${c.name}]]</option>
-
                                 </select>
                             </div>
                                 <!-- Giá sản phẩm -->

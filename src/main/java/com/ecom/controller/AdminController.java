@@ -31,17 +31,18 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
+    // Inject các dịch vụ liên quan đến Category, Product, User và Cart
     @Autowired
-    private CategoryService categoryService; // Inject CategoryService vào Controller
+    private CategoryService categoryService; // Dịch vụ quản lý danh mục sản phẩm
 
     @Autowired
-    private ProductService productService;
+    private ProductService productService; // Dịch vụ quản lý sản phẩm
 
     @Autowired
-    private UserService userService;
+    private UserService userService; // Dịch vụ quản lý người dùng
 
     @Autowired
-    private CartService cartService;
+    private CartService cartService; // Dịch vụ quản lý giỏ hàng
 
     @ModelAttribute
     public void getUserDetails(Principal p, Model model) {
@@ -50,21 +51,23 @@ public class AdminController {
             UserDtls userDtls = userService.getUserByEmail(email);
             model.addAttribute("user", userDtls);
             Integer countCart = cartService.getCountCart(userDtls.getId());
-            model.addAttribute("countCart", countCart);
+            model.addAttribute("countCart", countCart); // Hiển thị số lượng giỏ hàng
         }
         List<Category> allActiveCategory = categoryService.getAllActiveCategory();
-        model.addAttribute("categorys", allActiveCategory);
+        model.addAttribute("categorys", allActiveCategory); // Hiển thị danh mục sản phẩm
     }
 
+    // Hiển thị trang chủ của admin
     @GetMapping("/")
     public String index() {
         return "admin/index"; // Trả về view trang chủ admin
     }
 
+    // Tải trang thêm sản phẩm
     @GetMapping("/loadAddProduct")
     public String loadAddProduct(Model model) {
-        List<Category> categories = categoryService.getAllCategory();
-        model.addAttribute("categories", categories);
+        List<Category> categories = categoryService.getAllCategory(); // Lấy tất cả danh mục để hiển thị
+        model.addAttribute("categories", categories); // Truyền danh sách danh mục vào model
         return "admin/add_product"; // Trả về view để thêm sản phẩm
     }
 
@@ -74,9 +77,10 @@ public class AdminController {
         return "admin/category"; // Trả về view danh sách danh mục
     }
 
+    // Xử lý lưu danh mục mới
     @PostMapping("/saveCategory")
     public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, HttpSession session) throws IOException {
-        String imageName = file != null ? file.getOriginalFilename() : "default.webp"; // Lấy tên file hình ảnh
+        String imageName = file != null ? file.getOriginalFilename() : "default.webp"; // Kiểm tra và lấy tên file hình ảnh
         category.setImageName(imageName); // Gán tên hình ảnh cho danh mục
 
         Boolean existCategory = categoryService.existCategory(category.getName()); // Kiểm tra danh mục đã tồn tại chưa
@@ -150,9 +154,9 @@ public class AdminController {
         String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
 
         // Gán tên hình ảnh vào sản phẩ
-        product.setImage(imageName);
-        product.setDiscount(0);
-        product.setDiscountPrice(product.getPrice());
+        product.setImage(imageName); // Gán tên hình ảnh cho sản phẩm
+        product.setDiscount(0); // Mặc định không có giảm giá
+        product.setDiscountPrice(product.getPrice()); // Đặt giá giảm giá bằng giá gốc
 
         // Lưu sản phẩm vào cơ sở dữ liệu
         Product saveProduct = productService.saveProduct(product);
@@ -203,9 +207,9 @@ public class AdminController {
     // Xử lý yêu cầu chỉnh sửa sản phẩm
     @GetMapping("/editProduct/{id}")
     public String editProduct(@PathVariable int id, Model model) {
-        model.addAttribute("product", productService.getProductById(id));
-        model.addAttribute("categories", categoryService.getAllCategory());
-        return "admin/edit_product";
+        model.addAttribute("product", productService.getProductById(id)); // Lấy sản phẩm theo ID
+        model.addAttribute("categories", categoryService.getAllCategory()); // Lấy tất cả danh mục để hiển thị
+        return "admin/edit_product"; // Trả về view để chỉnh sửa sản phẩm
     }
 
     // Xử lý yêu cầu cập nhật sản phẩm
@@ -214,7 +218,7 @@ public class AdminController {
                                 HttpSession session, Model model) {
 
             if(product.getDiscount() < 0 || product.getDiscount() > 100) {
-                session.setAttribute("errorMsg", "Giảm giá không hợp lệ");
+                session.setAttribute("errorMsg", "Giảm giá không hợp lệ"); // Thông báo lỗi nếu giá giảm không hợp lệ
             } else {
                 // Cập nhật sản phẩm với hình ảnh mới nếu có
                 Product updateProduct = productService.updateProduct(product, image);
@@ -230,18 +234,28 @@ public class AdminController {
 
     @GetMapping("/users")
     public String getAllUsers(Model model) {
+        // Lấy danh sách tất cả người dùng có vai trò là "ROLE_USER"
         List<UserDtls> users = userService.getUsers("ROLE_USER");
+
+        // Thêm danh sách người dùng vào model để truyền dữ liệu vào view
         model.addAttribute("users", users);
+
+        // Trả về trang quản lý người dùng trong admin
         return "/admin/users";
     }
     @GetMapping("/updateStatus")
     public String updateUsAccountStatus(@RequestParam Boolean status, @RequestParam Integer id, HttpSession session) {
+        // Cập nhật trạng thái tài khoản của người dùng dựa trên id và trạng thái được truyền vào
         Boolean f = userService.updateAccountStatus(id, status);
+
+        // Nếu cập nhật thành công
         if (f) {
             session.setAttribute("succMsg", "Trạng thái tài khoản đã được cập nhật");
         } else {
             session.setAttribute("errorMsg", "Có lỗi xảy ra ");
         }
+
+        // Chuyển hướng lại về trang danh sách người dùng
         return "redirect:/admin/users";
     }
 

@@ -41,19 +41,19 @@
                     </th:block>
 
                     <div class="col-md-6 text-center">
-                        <img src="/img/product_img/laptop.jpg" width="330px" height="400px" alt="Laptop Asus Zenbook">
+                        <img alt="" th:src="@{'/img/product_img/'+${product.image}}" width="300px" height="250px" >
                             <div class="row mt-2">
                                 <div class="col-3 ">
-                                    <img src="/img/product_img/asus_con1.jpg" style="width: 80px; height: 80px;" class="img-fluid" alt="Hình nhỏ 1">
+                                    <img th:src="@{'/img/product_img/'+${product.image}}" style="width: 80px; height: 80px;" class="img-fluid" alt="Hình nhỏ 1">
                                 </div>
                                 <div class="col-3 ">
-                                    <img src="/img/product_img/asus_con2.jpg"  style="width: 80px; height: 80px;"class="img-fluid" alt="Hình nhỏ 2">
+                                    <img th:src="@{'/img/product_img/'+${product.image}}" style="width: 80px; height: 80px;"class="img-fluid" alt="Hình nhỏ 2">
                                 </div>
                                 <div class="col-3 ">
-                                    <img src="/img/product_img/asus_con3.jpg" style="width: 80px; height: 80px;" class="img-fluid" alt="Hình nhỏ 3">
+                                    <img th:src="@{'/img/product_img/'+${product.image}}" style="width: 80px; height: 80px;" class="img-fluid" alt="Hình nhỏ 3">
                                 </div>
                                 <div class="col-3 ">
-                                    <img src="/img/product_img/asus_con4.jpg"  style="width: 80px; height: 80px;"class="img-fluid" alt="Hình nhỏ 4">
+                                    <img th:src="@{'/img/product_img/'+${product.image}}"  style="width: 80px; height: 80px;"class="img-fluid" alt="Hình nhỏ 4">
                                 </div>
                             </div>
                     </div>
@@ -116,70 +116,6 @@
             </div>
         </div>
     </div>
-
-
-    <div class="container mt-5">
-        <h4 class="text-center">Sản phẩm tương tự</h4>
-        <div class="row mt-4">
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/img/product_img/Laptop Acer Aspire 3 Spin A3SP14-31PT-387Z.png" class="card-img-top" alt="Sản phẩm 1">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Asus Zenbook 14X OLED Q420VA | Core i7</h5>
-                        <p class="card-text">
-                            <span style="text-decoration: line-through; color: gray;">23.490.000đ</span><br>
-                            <span class="text-success">18.990.000đ</span> <span class="text-success">Giảm 19%</span>
-                        </p>
-                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/img/product_img/laptop-asus-vivobook-14-x1404za-nk386w_4_.webp" class="card-img-top" alt="Sản phẩm 2">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Asus Zenbook UX3402ZA-KM221W | Core i7</h5>
-                        <p class="card-text">
-                            <span style="text-decoration: line-through; color: gray;">22.490.000đ</span><br>
-                            <span class="text-success">16.190.000đ</span> <span class="text-success">Giảm 28%</span>
-                        </p>
-                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/img/product_img/ure9mdpe-817-asus-zenbook-14x-oled-q420va-core-i7-13700h-16gb-512gb-14-5-2k-oled-touch-120hz-new.jpg" class="card-img-top" alt="Sản phẩm 3">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Asus Zenbook UX3402ZA | Core i5</h5>
-                        <p class="card-text">
-                            <span style="text-decoration: line-through; color: gray;">18.790.000đ</span><br>
-                            <span class="text-success">15.490.000đ</span> <span class="text-success">Giảm 18%</span>
-                        </p>
-                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/img/product_img/laptop.jpg" class="card-img-top" alt="Sản phẩm 4">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Asus Zenbook 14X OLED Q410VA | Core i5</h5>
-                        <p class="card-text">
-                            <span style="text-decoration: line-through; color: gray;">20.490.000đ</span><br>
-                            <span class="text-success">14.990.000đ</span> <span class="text-success">Giảm 27%</span>
-                        </p>
-                        <a href="#" class="btn btn-primary">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 
     <div class="container mt-4">
         <div class="rating-section border p-4 rounded text-center">
