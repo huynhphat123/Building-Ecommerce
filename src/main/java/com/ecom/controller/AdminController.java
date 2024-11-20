@@ -1,16 +1,13 @@
 package com.ecom.controller;
 
-import com.ecom.model.Cart;
-import com.ecom.model.Category;
-import com.ecom.model.Product;
-import com.ecom.model.UserDtls;
-import com.ecom.service.CartService;
-import com.ecom.service.CategoryService;
-import com.ecom.service.ProductService;
-import com.ecom.service.UserService;
+import com.ecom.model.*;
+import com.ecom.service.*;
+import com.ecom.util.CommonUtil;
+import com.ecom.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -44,6 +41,11 @@ public class AdminController {
     @Autowired
     private CartService cartService; // Dịch vụ quản lý giỏ hàng
 
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private CommonUtil commonUtil;  // Các hàm tiện ích chung
     @ModelAttribute
     public void getUserDetails(Principal p, Model model) {
         if (p != null) {
@@ -259,5 +261,49 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
+    @GetMapping("/orders")
+    public String getAllOrders(Model model, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                               @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
 
+        Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo, pageSize);
+        model.addAttribute("orders", page.getContent());
+        model.addAttribute("srch", false);
+
+        model.addAttribute("pageNo", page.getNumber());
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("totalElements", page.getTotalElements());
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("isFirst", page.isFirst());
+        model.addAttribute("isLast", page.isLast());
+
+        return "/admin/orders";
+    }
+
+    @PostMapping("/update-order-status")
+    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
+
+        OrderStatus[] values = OrderStatus.values();
+        String status = null;
+
+        for (OrderStatus orderSt : values) {
+            if (orderSt.getId().equals(st)) {
+                status = orderSt.getName();
+            }
+        }
+
+        ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
+
+        try {
+            commonUtil.sendMailForProductOrder(updateOrder, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (!ObjectUtils.isEmpty(updateOrder)) {
+            session.setAttribute("succMsg", "Trạng thái đã cập nhật");
+        } else {
+            session.setAttribute("errorMsg", "Trạng thái chưa được cập nhật");
+        }
+        return "redirect:/admin/orders";
+    }
 }

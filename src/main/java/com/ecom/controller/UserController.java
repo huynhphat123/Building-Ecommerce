@@ -1,13 +1,12 @@
 package com.ecom.controller;
 
-import com.ecom.model.Cart;
-import com.ecom.model.Category;
-import com.ecom.model.OrderRequest;
-import com.ecom.model.UserDtls;
+import com.ecom.model.*;
 import com.ecom.service.CartService;
 import com.ecom.service.CategoryService;
 import com.ecom.service.OrderService;
 import com.ecom.service.UserService;
+import com.ecom.util.CommonUtil;
+import com.ecom.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +32,9 @@ public class UserController {
 
     @Autowired
     private OrderService orderService; // Dịch vụ xử lí đặt hàng
+
+    @Autowired
+    private CommonUtil commonUtil;  // Các hàm tiện ích chung
 
     // Trang chủ của người dùng
     @GetMapping("/")
@@ -120,9 +122,9 @@ public class UserController {
     }
 
     @PostMapping("/save-order")
-    public String saveOrder(@ModelAttribute OrderRequest request, Principal principal){
+    public String saveOrder(@ModelAttribute OrderRequest request, Principal principal) throws Exception {
         UserDtls user = getLoggedInUserDetails(principal);
-        orderService.saveOrder(user.getId(),request);
+        orderService.saveOrder(user.getId(), request);
 
         return "redirect:/user/success";
     }
@@ -131,5 +133,39 @@ public class UserController {
     public String loadSuccess() {
         return "/user/success";
     }
-}
 
+    @GetMapping("/user-orders")
+    public String myOrder(Model model, Principal principal) {
+        UserDtls loginUser = getLoggedInUserDetails(principal);
+        List<ProductOrder> orders = orderService.getOrdersByUser(loginUser.getId());
+        model.addAttribute("orders", orders);
+        return "/user/my_orders";
+    }
+
+    @GetMapping("/update-status")
+    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
+
+        OrderStatus[] values = OrderStatus.values();
+        String status = null;
+
+        for (OrderStatus orderSt : values) {
+            if (orderSt.getId().equals(st)) {
+                status = orderSt.getName();
+            }
+        }
+        ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
+
+        try {
+            commonUtil.sendMailForProductOrder(updateOrder, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (!ObjectUtils.isEmpty(updateOrder)) {
+            session.setAttribute("succMsg", "Trạng thái đã cập nhật");
+        } else {
+            session.setAttribute("errorMsg", "Trạng thái chưa được cập nhật");
+        }
+        return "redirect:/user/user-orders";
+    }
+}

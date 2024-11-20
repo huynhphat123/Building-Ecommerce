@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Đơn Hàng người dùng</title>
+</head>
+<body>
+<section>
+  <div class="container-fluid mt-5 p-1">
+    <div class="row">
+      <p class="text-center fs-3 mt-2 fw-bold">Tất cả Đơn Hàng</p>
+      <hr>
+      <a href="/admin/" class="text-decoration-none"><i
+              class="fa-solid fa-arrow-left"></i> Quay lại</a>
+      <th:block th:if="${session.succMsg}">
+        <p class="text-success fw-bold text-center">[[${session.succMsg}]]</p>
+        <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+      </th:block>
+
+      <th:block th:if="${session.errorMsg}">
+        <p class="text-danger fw-bold text-center">[[${session.errorMsg}]]</p>
+        <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+      </th:block>
+      <div class="col-md-4 p-4">
+
+        <form action="/admin/search-order" method="get">
+          <div class="row">
+            <div class="col">
+              <input type="text" class="form-control " name="orderId"
+                     placeholder="Nhập mã đơn hàng">
+            </div>
+            <div class="col">
+              <button class="btn btn-primary col">Tìm kiếm</button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+      <div class="col-md-12 ps-4 pe-4">
+
+        <table class="table table-bordered card-sh">
+          <thead class="table-light">
+          <tr>
+            <th scope="col">Mã Đơn Hàng</th>
+            <th scope="col">Thông Tin Giao Hàng</th>
+            <th scope="col">Ngày</th>
+            <th scope="col">Thông Tin Sản Phẩm</th>
+            <th scope="col">Giá</th>
+            <th scope="col">Trạng Thái</th>
+            <th scope="col">Hành Động</th>
+          </tr>
+          </thead>
+          <tbody>
+          <th:block th:if="${srch}">
+            <th:block th:if="${orderDtls!=null}">
+              <tr>
+                <th scope="row">[[${orderDtls.orderId}]]</th>
+
+                <td>Tên: [[${orderDtls.orderAddress.firstName+' '+orderDtls.orderAddress.lastName}]]<br> Email:
+                  [[${orderDtls.orderAddress.email}]] <br> Số điện thoại:
+                  [[${orderDtls.orderAddress.number}]] <br> Địa chỉ:
+                  [[${orderDtls.orderAddress.address}]] <br> Thành phố:
+                  [[${orderDtls.orderAddress.city}]] <br> Tỉnh:
+                  [[${orderDtls.orderAddress.state}]], [[${orderDtls.orderAddress.pincode}]]</td>
+                <td>[[${orderDtls.orderDate}]]</td>
+                <td>[[${orderDtls.product.title}]]</td>
+                <td>Số lượng: [[${orderDtls.quantity}]] <br>Giá:
+                  [[${orderDtls.price}]] <br>Tổng giá: [[${orderDtls.quantity * orderDtls.price}]]
+                </td>
+                <td>[[${orderDtls.status}]]</td>
+                <td>
+                  <form action="/admin/update-order-status" method="post">
+                    <div class="row">
+                      <div class="col">
+                        <select class="form-control" name="st">
+                          <option>--chọn--</option>
+                          <option value="1">Đang xử lý</option>
+                          <option value="2">Đã nhận đơn</option>
+                          <option value="3">Sản phẩm đã đóng gói</option>
+                          <option value="4">Đang giao hàng</option>
+                          <option value="5">Đã giao</option>
+                          <option value="6">Đã hủy</option>
+                        </select>
+                      </div>
+                      <input th:value="${orderDtls.id}" name="id" type="hidden">
+                      <div class="col">
+                        <th:block
+                                th:if="${orderDtls.status=='Đã hủy' || orderDtls.status=='Đã giao'}">
+                          <button class="btn btn-primary btn-sm col disabled">Cập nhật</button>
+                        </th:block>
+                        <th:block
+                                th:unless="${orderDtls.status=='Đã hủy' || orderDtls.status=='Đã giao'}">
+                          <button class="btn btn-sm btn-primary ">Cập nhật</button>
+                        </th:block>
+                      </div>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+            </th:block>
+            <th:block th:unless="${orderDtls!=null}">
+              <p class="fs-3 text-center text-danger">[[${errorMsg}]]</p>
+            </th:block>
+          </th:block>
+
+          <th:block th:unless="${srch}">
+            <tr th:each="o:${orders}">
+              <th scope="row">[[${o.orderId}]]</th>
+
+              <td>Tên: [[${o.orderAddress.firstName+' '+o.orderAddress.lastName}]]<br> Email:
+                [[${o.orderAddress.email}]] <br> Số điện thoại:
+                [[${o.orderAddress.number}]] <br> Địa chỉ:
+                [[${o.orderAddress.address}]] <br> Thành phố:
+                [[${o.orderAddress.city}]] <br> Tỉnh:
+                [[${o.orderAddress.state}]], [[${o.orderAddress.pincode}]]</td>
+              <td>[[${o.orderDate}]]</td>
+              <td>[[${o.product.title}]]</td>
+              <td>Số lượng: [[${o.quantity}]] <br>Giá:
+                [[${o.price}]] <br>Tổng giá: [[${o.quantity * o.price}]]
+              </td>
+              <td>[[${o.status}]]</td>
+              <td>
+                <form action="/admin/update-order-status" method="post">
+                  <div class="row">
+                    <div class="col">
+                      <select class="form-control" name="st">
+                        <option>--Chọn--</option>
+                        <option value="1">Đang xử lý</option>
+                        <option value="2">Đã nhận đơn</option>
+                        <option value="3">Sản phẩm đã đóng gói</option>
+                        <option value="4">Đang giao hàng</option>
+                        <option value="5">Đã giao</option>
+                        <option value="6">Đã hủy</option>
+                      </select>
+                    </div>
+                    <input th:value="${o.id}" name="id" type="hidden">
+                    <div class="col">
+                      <th:block
+                              th:if="${o.status=='Đã hủy' || o.status=='Đã giao'}">
+                        <button class="btn btn-primary btn-sm col disabled">Cập nhật</button>
+                      </th:block>
+                      <th:block
+                              th:unless="${o.status=='Đã hủy' || o.status=='Đã giao'}">
+                        <button class="btn btn-sm btn-primary ">Cập nhật</button>
+                      </th:block>
+                    </div>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          </th:block>
+          </tbody>
+        </table>
+        <th:block th:if="${!srch}">
+          <div class="row">
+            <div class="col-md-4">Tổng số đơn hàng: [[${totalElements}]]</div>
+            <div class="col-md-6">
+
+              <nav aria-label="Điều hướng trang">
+                <ul class="pagination">
+                  <li class="page-item"
+                      th:classappend="${isFirst} ? 'disabled':''"><a
+                          class="page-link"
+                          th:href="@{'/admin/orders?pageNo='+${1}}"
+                          aria-label="Trước"> <span aria-hidden="true">&laquo;</span>
+                  </a></li>
+
+                  <li th:each="i:${#numbers.sequence(1,totalPages)}"
+                      class="page-item" th:classappend="${pageNo+1==i}?'active':''"
+                      ]]><a class="page-link"
+                            th:href="@{'/admin/orders?pageNo='+${1}}">[[${i}]]</a></li>
+
+                  <li class="page-item"
+                      th:classappend="${isLast} ? 'disabled':''"><a
+                          class="page-link"
+                          th:href="@{'/admin/orders?pageNo='+${pageNo+1}}"
+                          aria-label="Sau"> <span aria-hidden="true">&raquo;</span>
+                  </a></li>
+
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>
