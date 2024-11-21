@@ -9,10 +9,12 @@ import com.ecom.util.CommonUtil;
 import com.ecom.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -35,6 +37,9 @@ public class UserController {
 
     @Autowired
     private CommonUtil commonUtil;  // Các hàm tiện ích chung
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Trang chủ của người dùng
     @GetMapping("/")
@@ -167,5 +172,45 @@ public class UserController {
             session.setAttribute("errorMsg", "Trạng thái chưa được cập nhật");
         }
         return "redirect:/user/user-orders";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "/user/profile";
+    }
+
+    @PostMapping("/update-profile")
+    public String updateProfile(@ModelAttribute UserDtls user, @RequestParam MultipartFile img, HttpSession session) {
+
+        UserDtls updateUserProfile = userService.updateUserProfile(user, img);
+        if (ObjectUtils.isEmpty(updateUserProfile)) {
+            session.setAttribute("errorMsg", "Hồ sơ chưa được cập nhật");
+        } else {
+            session.setAttribute("succMsg", "Đã cập nhật hồ sơ");
+        }
+
+        return "redirect:/user/profile";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String newPassword, @RequestParam String currentPassword, Principal p,
+                                 HttpSession session) {
+        UserDtls loggedInUserDetails = getLoggedInUserDetails(p);
+
+        boolean matches = passwordEncoder.matches(currentPassword, loggedInUserDetails.getPassword());
+
+        if (matches) {
+            String encodePassword = passwordEncoder.encode(newPassword);
+            loggedInUserDetails.setPassword(encodePassword);
+            UserDtls updateUser = userService.updateUser(loggedInUserDetails);
+            if (ObjectUtils.isEmpty(updateUser)) {
+                session.setAttribute("errorMsg", "Mật khẩu không được cập nhật, lỗi phía máy chủ");
+            } else {
+                session.setAttribute("succMsg", "Mật khẩu đã được cập nhật thành công");
+            }
+        } else {
+            session.setAttribute("errorMsg", "Mật khẩu hiện tại không chính xác");
+        }
+        return "redirect:/user/profile";
     }
 }

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 
 // Các annotation của Lombok để tự động sinh constructor, getter và setter cho class này
@@ -18,7 +19,8 @@ import java.util.Date;
 @Setter               // Tự động sinh setter cho các thuộc tính
 
 @Entity               // Đánh dấu class này là một entity, map với bảng trong cơ sở dữ liệu
-public class UserDtls {
+public class UserDtls implements Serializable {
+    private static final long serialVersionUID = 1L; // Đảm bảo serialVersionUID có thể giúp kiểm tra sự tương thích giữa các phiên bản của lớp
 
     @Id  // Đánh dấu thuộc tính `id` là khóa chính
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // Tự động sinh giá trị cho trường `id` theo chiến lược auto increment

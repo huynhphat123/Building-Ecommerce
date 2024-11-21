@@ -18,10 +18,34 @@
     <link rel="stylesheet" href="/css/style.css">
 
     <style>
-        footer h5 {
-            display: inline-block;
-            padding-bottom: 5px;
+        footer .container .row {
+            display: flex;
+            justify-content: center;
+            gap: 30px; /* Khoảng cách giữa các phần tử */
         }
+
+        footer .container .row .col-md-3 {
+            text-align: center;
+        }
+
+        footer .container .row .col-md-3 h5 {
+            margin-bottom: 10px;
+        }
+
+        footer .container .row .col-md-3 ul {
+            padding-left: 0;
+        }
+
+        footer .container .row .col-md-3 ul li {
+            list-style-type: none;
+            margin-bottom: 5px;
+        }
+
+        footer .container .row .col-md-3 iframe {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
 
         .payment-methods img {
             background-color: #fff;
@@ -116,7 +140,7 @@
                            aria-expanded="false">
                             <i class="fa-solid fa-user"></i> [[${user.name}]]</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/user/user-orders"><i class="fas fa-user"></i> Hồ sơ </a></li>
+                            <li><a class="dropdown-item" href="/user/profile"><i class="fas fa-user"></i> Hồ sơ </a></li>
                             <li><a class="dropdown-item" href="/user/user-orders"><i class="fas fa-shopping-bag"></i> Đơn hàng của tôi </a></li>
                             <li><a class="dropdown-item" href="/logout"> <i class="fa-solid fa-right-to-bracket"></i> Đăng xuất</a>
                             </li>
@@ -136,159 +160,64 @@
 
 <!-- Bắt đầu Footer -->
 <!-- Footer -->
-<footer class="bg-primary text-white pt-5 pb-4" style="margin-top: 100px">
+<footer class="bg-primary text-white pt-5 pb-3 ">
     <div class="container">
+        <!-- Về P&Y Store -->
         <div class="row">
-            <!-- Về P&Y Store -->
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold">Về P&Y Store</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Về chúng tôi</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Tuyển dụng</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Tin tức</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Liên hệ</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Về chúng tôi</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Tuyển dụng</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Tin tức</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Liên hệ</a></li>
                 </ul>
-                <h5 class="fw-bold mt-1">Đăng ký nhận tin khuyến mãi</h5>
-                <form>
-                    <div class="mb-2">
-                        <label for="email" class="form-label">Email *</label>
-                        <input type="email" class="form-control form-control-sm" id="email" placeholder="Email"
-                               required>
-                    </div>
-                    <div class="mb-2">
-                        <label for="phone" class="form-label">Số điện thoại</label>
-                        <input type="tel" class="form-control form-control-sm" id="phone" placeholder="Số điện thoại">
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="terms">
-                        <label class="form-check-label" for="terms">Tôi đồng ý với điều khoản của P&Y Store</label>
-                    </div>
-                    <button type="submit" class="btn btn-danger w-100 mt-2">ĐĂNG KÝ NGAY</button>
-                </form>
             </div>
-
 
             <!-- Chính sách -->
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold">Thông tin và chính sách</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Mua hàng và thanh toán Online</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Mua hàng trả góp Online</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Mua hàng trả góp bằng thẻ tín dụng</a>
-                    </li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Chính sách giao hàng</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Tra điểm Smember</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Xem ưu đãi Smember</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Tra thông tin bảo hành</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Tra cứu hoá đơn điện tử</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Thông tin hoá đơn mua hàng</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Trung tâm bảo hành chính hãng</a></li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Quy định về việc sao lưu dữ liệu</a>
-                    </li>
-                    <li><a href="#" class="text-white text-decoration-none mb-1">Chính sách khui hộp sản phẩm Apple</a>
-                    </li>
+                    <li><a href="#" class="text-white text-decoration-none">Mua hàng và thanh toán Online</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Chính sách giao hàng</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Tra cứu hoá đơn</a></li>
                 </ul>
             </div>
 
-
-            <!-- Hệ thống cửa hàng -->
-            <div class="col-md-3 mb-4 pt-1">
-                <h5 class="fw-bold">Dịch vụ và thông tin khác</h5>
-                <ul class="list-unstyled">
-                    <li class="text-white mb-1">Khách hàng doanh nghiệp (B2B)</li>
-                    <li class="text-white mb-1">Ưu đãi thanh toán</li>
-                    <li class="text-white mb-1">Quy chế hoạt động</li>
-                    <li class="text-white mb-1">Chính sách bảo mật thông tin cá nhân</li>
-                    <li class="text-white mb-1">Chính sách Bảo hành</li>
-                    <li class="text-white mb-1">Liên hệ hợp tác kinh doanh</li>
-                    <li class="text-white mb-1">Tuyển dụng</li>
-                    <li class="text-white mb-1">Dịch vụ bảo hành mở rộng</li>
-                    <li class="text-white mb-1">Smember: Tích điểm & sử dụng ưu đãi</li>
-                </ul>
-            </div>
-
-
-            <!-- Thông tin liên hệ -->
+            <!-- Liên hệ -->
             <div class="col-md-3 mb-4">
                 <h5 class="fw-bold">Thông tin liên hệ</h5>
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3920.262042799398!2d106.62178157451648!3d10.71426046033838!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752dfc618c079d%3A0x93d52efc36f9d3cd!2zOTRCIFBow7ogxJDhu4tuaCwgUGjGsOG7nW5nIDE2LCBRdeG6rW4gOCwgSOG7kyBDaMOtIE1pbmgsIFZp4buHdCBOYW0!5e0!3m2!1svi!2sus!4v1729067992420!5m2!1svi!2sus"
                         width="100%" height="150" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"></iframe>
-                <!-- Nút số điện thoại -->
-                <a href="tel:0898143789" class="btn btn-phone mt-3 d-block text-white">
-                    <i class="fas fa-phone-alt me-2"></i> 0335.505.xx9
-                </a>
+                <p>Địa chỉ: Phú Định, Quận 8, TP.HCM</p>
+                <p>Điện thoại: 0335.505.xx9</p>
             </div>
         </div>
 
-        <!-- Phương thức thanh toán và Liên kết mạng xã hội -->
-        <div class="row mt-4 ">
-            <div class="col-md-6">
-                <h5 class="fw-bold">Phương thức thanh toán</h5>
-                <div class="payment-methods">
-                    <img src="img/payment_img/visa.svg" alt="Visa" style="width: 35px;">
-                    <img src="img/payment_img/mastercard.svg" alt="Mastercard" style="width: 35px;">
-                    <img src="img/payment_img/hiper.svg" alt="hiper" style="width: 35px;">
-                    <img src="img/payment_img/maestro.svg" alt="maestro" style="width: 35px;">
-                    <img src="img/payment_img/paypal.svg" alt="paypal" style="width: 35px;">
-
-                </div>
-            </div>
-
-            <div class="col-md-6 text-center">
+        <!-- Liên kết mạng xã hội -->
+        <div class="row mt-4 text-center">
+            <div class="col-md-12">
                 <h5 class="fw-bold">Liên kết mạng xã hội</h5>
-                <div class="d-flex justify-content-center align-items-center">
-                    <a href="https://www.facebook.com/profile.php?id=100011625225068"
-                       class="d-flex justify-content-center align-items-center bg-white rounded-circle me-3 text-decoration-none"
-                       style="width: 30px; height: 30px;">
-                        <i class="fab fa-facebook text-primary"></i>
-                    </a>
-                    <a href="https://www.tiktok.com/@phathuynh1005"
-                       class="d-flex justify-content-center align-items-center bg-white rounded-circle me-3 text-decoration-none"
-                       style="width: 30px; height: 30px;">
-                        <i class="fab fa-tiktok text-primary"></i>
-                    </a>
-                    <a href="https://yt3.ggpht.com/yti/ANjgQV82ttTkctWrUuwf9_qXz5NsQTS9PAo-u_0NjhxEij6qPqc=s108-c-k-c0x00ffffff-no-rjhttps://yt3.ggpht.com/yti/ANjgQV82ttTkctWrUuwf9_qXz5NsQTS9PAo-u_0NjhxEij6qPqc=s108-c-k-c0x00ffffff-no-rj"
-                       class="d-flex justify-content-center align-items-center bg-white rounded-circle me-3 text-decoration-none"
-                       style="width: 30px; height: 30px;">
-                        <i class="fab fa-youtube text-primary"></i>
-                    </a>
-                    <a href="https://www.instagram.com/htp.1005/"
-                       class="d-flex justify-content-center align-items-center bg-white rounded-circle text-decoration-none"
-                       style="width: 30px; height: 30px;">
-                        <i class="fab fa-instagram text-primary"></i>
-                    </a>
-                </div>
-            </div>
-
-
-            <!-- Địa chỉ công ty -->
-            <div class="text-left mt-4 ">
-                <p class="mb-0 small">CÔNG TY TNHH P&Y - GPKD: 14.05.2001 cấp tại Sở KH & ĐT TP. HCM. Địa chỉ văn phòng:
-                    Phú Định Quận 8, Thành Phố Hồ Chí Minh, Việt Nam</p>
-                <p class="mb-0 small">Điện thoại: 0335.505.xx9</p>
+                <hr>
+                <a href="https://www.facebook.com" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.instagram.com" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com" class="text-white"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
     </div>
 </footer>
 
-<div class="footer-end py-3">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6 d-flex justify-content-start">
-                <p class="mb-0">P&Y Ecommerce giữ bản quyền trên website.</p>
-            </div>
-            <div class="col-md-6 d-flex justify-content-end">
-                <p class="mb-0">Design and Maintain by <strong>LOVAWEB</strong></p>
-            </div>
-        </div>
-    </div>
+<div class="footer-end py-3 text-center text-white">
+    <p class="mb-0">P&Y Ecommerce © 2024 | Designed by <strong>LOVAWEB</strong></p>
 </div>
 <!-- Kết thúc Footer -->
 <!-- Bootstap  -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
+
 
 </body>
 </html>
