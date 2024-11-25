@@ -74,9 +74,21 @@ public class AdminController {
     }
 
     @GetMapping("/category")
-    public String category(Model model) {
-        model.addAttribute("categorys", categoryService.getAllCategory()); // Lấy danh sách các danh mục và gửi vào model
-        return "admin/category"; // Trả về view danh sách danh mục
+    public String category(Model m, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                           @RequestParam(name = "pageSize", defaultValue = "2") Integer pageSize) {
+        // m.addAttribute("categorys", categoryService.getAllCategory());
+        Page<Category> page = categoryService.getAllCategorPagination(pageNo, pageSize);
+        List<Category> categorys = page.getContent();
+        m.addAttribute("categorys", categorys);
+
+        m.addAttribute("pageNo", page.getNumber());
+        m.addAttribute("pageSize", pageSize);
+        m.addAttribute("totalElements", page.getTotalElements());
+        m.addAttribute("totalPages", page.getTotalPages());
+        m.addAttribute("isFirst", page.isFirst());
+        m.addAttribute("isLast", page.isLast());
+
+        return "admin/category";  // Trả về view danh sách danh mục
     }
 
     // Xử lý lưu danh mục mới
@@ -186,10 +198,18 @@ public class AdminController {
 
     // Xử lý yêu cầu xem danh sách sản phẩm
     @GetMapping("/products")
-    public String loadViewProduct(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
-        return "admin/products";  // quay lại trang sản phẩm
+    public String loadViewProduct(Model model,@RequestParam(defaultValue = "") String ch) {
+        List<Product> products = null;
+
+        if(ch!=null && ch.length() > 0) {
+            products = productService.searchProduct(ch);
+        } else {
+            products = productService.getAllProducts();
+        }
+        model.addAttribute("products", products);
+        return "admin/products";
     }
+
     // Xử lý yêu cầu xóa sản phẩm
     @GetMapping("/deleteProduct/{id}")
     public String deleteProduct(@PathVariable int id, HttpSession session) {
@@ -305,5 +325,29 @@ public class AdminController {
             session.setAttribute("errorMsg", "Trạng thái chưa được cập nhật");
         }
         return "redirect:/admin/orders";
+    }
+
+    @GetMapping("/search-order")
+    public String searchProduct(@RequestParam String orderId, Model model, HttpSession session) {
+
+        if (orderId != null && orderId.length() > 0) {
+
+            ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
+
+            if (ObjectUtils.isEmpty(order)) {
+                session.setAttribute("errorMsg", "Mã đơn hàng không chính xác");
+                model.addAttribute("orderDtls", null);
+            } else {
+                model.addAttribute("orderDtls", order);
+            }
+
+            model.addAttribute("srch", true);
+        } else {
+            List<ProductOrder> allOrders = orderService.getAllOrders();
+            model.addAttribute("orders", allOrders);
+            model.addAttribute("srch", false);
+        }
+        return "/admin/orders";
+
     }
 }

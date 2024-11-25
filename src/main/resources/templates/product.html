@@ -7,10 +7,10 @@
 </head>
 <body>
 <section>
-    <div class="container-fluid bg-primary p-5 mt-5">
+    <div class="container-fluid custom-blue p-4 mt-5">
         <div class="row">
             <div class="col-md-8 offset-md-2">
-                <form>
+                <form action="search" method="get">
                     <div class="input-group">
                         <input type="text" class="form-control" name="ch" placeholder="Nhập sản phẩm bạn cần tìm">
                         <button class="btn btn-light text-dark ms-3 col-md-2">
@@ -42,43 +42,39 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-md-10">
                 <div class="card">
                     <div class="card-body">
                         <p class="js-3 text-center fw-bold fs-4">Các sản phẩm</p>
 
                         <th:block th:if="${products.size > 0}">
-
-                        <div class="row">
-                            <div class="col-md-3 mt-2" th:each="p:${products}">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <img th:src="@{'/img/product_img/' + ${p.image}}" width="150px" height="150px">
-                                        <p class="fs-5 text-center">[[${p.title}]]</p>
-                                        <div class="row text-center">
-                                            <p class="fs-6 fw-bold">
-                                                <span> [[${p.discountPrice}]]</span> <br>
-
-                                                <span style="text-decoration: line-through; color: gray;"
-                                                      class="text-decoration-line-through">
-                                                      [[${p.price}]]
-                                                 </span>
-
-                                                <span class="fs-6 text-success">[[${p.discount}]]%</span>
-                                            </p>
-                                            <a th:href="@{'/product/'+${p.id}}"
-                                               class="btn btn-primary col-md-6 offset-md-3">Xem chi
-                                                tiết</a>
+                            <div class="row">
+                                <div class="col-md-3 mt-2" th:each="p:${products}">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <img th:src="@{'/img/product_img/' + ${p.image}}" width="150px"
+                                                 height="150px">
+                                            <p class="fs-5 text-center">[[${p.title}]]</p>
+                                            <div class="row text-center">
+                                                <p class="fs-6 fw-bold">
+                                                    <span>[[${p.discountPrice}]]</span> <br>
+                                                    <span style="text-decoration: line-through; color: gray;"
+                                                          class="text-decoration-line-through">[[${p.price}]]</span>
+                                                    <span class="fs-6 text-success">[[${p.discount}]]%</span>
+                                                </p>
+                                                <a th:href="@{'/product/'+${p.id}}"
+                                                   class="btn btn-primary col-md-6 offset-md-3">Xem chi tiết</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         </th:block>
-                          <th:block th:unless="${products.size > 0}">
-                              <p class="fs-f4 text-center mt-4 text-danger fw-bold">Sản phẩm không có sẵn</p>
-                          </th:block>
-                        </div>
+
+                        <th:block th:unless="${products.size > 0}">
+                            <p class="fs-f4 text-center mt-4 text-danger fw-bold">Sản phẩm không có sẵn</p>
+                        </th:block>
                     </div>
                 </div>
             </div>

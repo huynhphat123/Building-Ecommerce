@@ -5,6 +5,9 @@ import com.ecom.repository.ProductRepository;
 import com.ecom.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
         // Cập nhật các thông tin của sản phẩm
         dbProduct.setTitle(product.getTitle());  // Cập nhật tiêu đề sản phẩm
         dbProduct.setDescription(product.getDescription());  // Cập nhật mô tả sản phẩm
-         dbProduct.setCategory(product.getCategory()); // Cập nhật danh mục sản phẩm
+        dbProduct.setCategory(product.getCategory()); // Cập nhật danh mục sản phẩm
         dbProduct.setPrice(product.getPrice());  // Cập nhật giá sản phẩm
         dbProduct.setStock(product.getStock());  // Cập nhật số lượng sản phẩm trong kho
         dbProduct.setImage(imageName);  // Cập nhật tên hình ảnh sản phẩm
@@ -100,12 +103,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getAllActiveProducts(String category) {
         List<Product> products = null;
-        if(ObjectUtils.isEmpty(category)){
-            products =  productRepository.findByIsActiveTrue();
+        if (ObjectUtils.isEmpty(category)) {
+            products = productRepository.findByIsActiveTrue();
         } else {
             products = productRepository.findByCategory(category);
         }
+
         return products;
     }
+
+    @Override
+    public List<Product> searchProduct(String ch) {
+        return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch, ch);
+    }
+
+
+
 }
+
 

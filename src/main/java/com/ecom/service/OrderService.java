@@ -22,7 +22,7 @@ public interface OrderService {
    public List<ProductOrder> getAllOrders();
 
     // Lấy đơn hàng theo ID đơn hàng
-    // public ProductOrder getOrdersByOrderId(String orderId);
+     public ProductOrder getOrdersByOrderId(String orderId);
 
     // Lấy tất cả đơn hàng với phân trang
     public Page<ProductOrder> getAllOrdersPagination(Integer pageNo, Integer pageSize);

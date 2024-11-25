@@ -8,11 +8,13 @@ import com.ecom.service.CategoryService;
 import com.ecom.service.ProductService;
 import com.ecom.service.UserService;
 import com.ecom.util.CommonUtil;
+import io.micrometer.common.util.StringUtils;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -48,7 +50,7 @@ public class HomeController {
     private CommonUtil commonUtil;  // Các hàm tiện ích chung
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;  // Mã hóa mật khẩu
+    private PasswordEncoder passwordEncoder;  // Mã hóa mật khẩu
 
     @Autowired
     private CartService cartService;  // Dịch vụ xử lý giỏ hàng
@@ -84,15 +86,16 @@ public class HomeController {
     }
 
     @GetMapping("/products")
-    public String products(Model model, @RequestParam(value = "category",defaultValue = "") String category) {
-        List<Category> categories = categoryService.getAllActiveCategory();  // Lấy danh sách danh mục
-        List<Product> products = productService.getAllActiveProducts(category);  // Lấy danh sách sản phẩm theo danh mục
-        model.addAttribute("categories", categories);  // Thêm danh mục vào model
-        model.addAttribute("products", products);  // Thêm sản phẩm vào model
-        model.addAttribute("paramValue", category);  // Thêm giá trị danh mục vào model
+    public String products(Model model, @RequestParam(value = "category", defaultValue = "") String category) {
 
-        return "product"; // Trả về product.html trong /templates/
+        List<Category> categories = categoryService.getAllActiveCategory();
+        List<Product> products = productService.getAllActiveProducts(category);
+        model.addAttribute("categories", categories);
+        model.addAttribute("products", products);
+        model.addAttribute("paramValue", category);
+        return "product";
     }
+
 
     @GetMapping("/product/{id}")
     public String product(@PathVariable int id,Model model) {
@@ -196,5 +199,15 @@ public class HomeController {
             model.addAttribute("msg", "Đổi mật khẩu thành công");  // Thông báo thành công
             return "message";  // Trả về trang message.html
         }
+    }
+
+    @GetMapping("/search")
+    public String searchProduct(@RequestParam String ch,Model model) {
+        List<Product> searchProducts = productService.searchProduct(ch);
+        model.addAttribute("products", searchProducts);
+        List<Category> categories = categoryService.getAllActiveCategory();
+        model.addAttribute("categories", categories);
+
+        return "product";
     }
 }
