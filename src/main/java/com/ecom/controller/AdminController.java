@@ -74,19 +74,19 @@ public class AdminController {
     }
 
     @GetMapping("/category")
-    public String category(Model m, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                           @RequestParam(name = "pageSize", defaultValue = "2") Integer pageSize) {
-        // m.addAttribute("categorys", categoryService.getAllCategory());
+    public String category(Model model, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                           @RequestParam(name = "pageSize", defaultValue = "8") Integer pageSize) {
+
         Page<Category> page = categoryService.getAllCategorPagination(pageNo, pageSize);
         List<Category> categorys = page.getContent();
-        m.addAttribute("categorys", categorys);
+        model.addAttribute("categorys", categorys);
 
-        m.addAttribute("pageNo", page.getNumber());
-        m.addAttribute("pageSize", pageSize);
-        m.addAttribute("totalElements", page.getTotalElements());
-        m.addAttribute("totalPages", page.getTotalPages());
-        m.addAttribute("isFirst", page.isFirst());
-        m.addAttribute("isLast", page.isLast());
+        model.addAttribute("pageNo", page.getNumber());
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("totalElements", page.getTotalElements());
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("isFirst", page.isFirst());
+        model.addAttribute("isLast", page.isLast());
 
         return "admin/category";  // Trả về view danh sách danh mục
     }
@@ -198,16 +198,31 @@ public class AdminController {
 
     // Xử lý yêu cầu xem danh sách sản phẩm
     @GetMapping("/products")
-    public String loadViewProduct(Model model,@RequestParam(defaultValue = "") String ch) {
-        List<Product> products = null;
+    public String loadViewProduct(Model model,@RequestParam(defaultValue = "") String ch,
+                                  @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                                  @RequestParam(name = "pageSize", defaultValue = "8") Integer pageSize) {
 
-        if(ch!=null && ch.length() > 0) {
-            products = productService.searchProduct(ch);
+        Page<Product> page = null;
+
+        // Nếu chuỗi tìm kiếm 'ch' không rỗng, thực hiện tìm kiếm phân trang
+        if (ch != null && ch.length() > 0) {
+            page = productService.searchProductPagination(pageNo, pageSize, ch);
         } else {
-            products = productService.getAllProducts();
+            // Nếu không có từ khóa tìm kiếm, lấy tất cả sản phẩm và phân trang
+            page = productService.getAllProductsPagination(pageNo, pageSize);
         }
-        model.addAttribute("products", products);
-        return "admin/products";
+        // Thêm danh sách sản phẩm vào model để hiển thị
+        model.addAttribute("products", page.getContent());
+
+        // Thêm các thông tin về phân trang vào model
+        model.addAttribute("pageNo", page.getNumber());
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("totalElements", page.getTotalElements());
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("isFirst", page.isFirst());
+        model.addAttribute("isLast", page.isLast());
+
+        return "admin/products"; // Trả về trang admin/product.html
     }
 
     // Xử lý yêu cầu xóa sản phẩm
@@ -281,14 +296,19 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
+    // Lấy danh sách tất cả đơn hàng có phân trang
     @GetMapping("/orders")
     public String getAllOrders(Model model, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                               @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+                               @RequestParam(name = "pageSize", defaultValue = "1") Integer pageSize) {
 
+        // Gọi service để lấy danh sách đơn hàng với phân trang
         Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo, pageSize);
+
+        // Thêm danh sách đơn hàng vào model
         model.addAttribute("orders", page.getContent());
         model.addAttribute("srch", false);
 
+        // Thêm các thông tin về phân trang
         model.addAttribute("pageNo", page.getNumber());
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalElements", page.getTotalElements());
@@ -296,58 +316,78 @@ public class AdminController {
         model.addAttribute("isFirst", page.isFirst());
         model.addAttribute("isLast", page.isLast());
 
-        return "/admin/orders";
+        return "/admin/orders"; // Trả về trang admin/orders.html
     }
 
+    // Cập nhật trạng thái đơn hàng
     @PostMapping("/update-order-status")
     public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
 
+        // Lấy danh sách trạng thái đơn hàng từ enum
         OrderStatus[] values = OrderStatus.values();
         String status = null;
 
+        // Tìm trạng thái tương ứng với ID truyền vào
         for (OrderStatus orderSt : values) {
             if (orderSt.getId().equals(st)) {
                 status = orderSt.getName();
             }
         }
 
+        // Gọi service để cập nhật trạng thái đơn hàng
         ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
 
         try {
+            // Gửi email thông báo về việc cập nhật trạng thái đơn hàng
             commonUtil.sendMailForProductOrder(updateOrder, status);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Ghi log lỗi nếu không thể gửi email
         }
 
+        // Kiểm tra nếu việc cập nhật thành công
         if (!ObjectUtils.isEmpty(updateOrder)) {
             session.setAttribute("succMsg", "Trạng thái đã cập nhật");
         } else {
             session.setAttribute("errorMsg", "Trạng thái chưa được cập nhật");
         }
+        // Điều hướng quay lại trang danh sách đơn hàng
         return "redirect:/admin/orders";
     }
 
+    // Tìm kiếm đơn hàng theo mã đơn hàng
     @GetMapping("/search-order")
-    public String searchProduct(@RequestParam String orderId, Model model, HttpSession session) {
+    public String searchProduct(@RequestParam String orderId, Model model, HttpSession session,@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                                @RequestParam(name = "pageSize", defaultValue = "2") Integer pageSize) {
 
+        // Kiểm tra nếu có mã đơn hàng được nhập
         if (orderId != null && orderId.length() > 0) {
 
+            // Gọi service để tìm kiếm đơn hàng theo mã đơn hàng
             ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
 
+            // Kiểm tra nếu đơn hàng không tồn tại
             if (ObjectUtils.isEmpty(order)) {
                 session.setAttribute("errorMsg", "Mã đơn hàng không chính xác");
                 model.addAttribute("orderDtls", null);
             } else {
+                // Thêm chi tiết đơn hàng vào model
                 model.addAttribute("orderDtls", order);
             }
-
-            model.addAttribute("srch", true);
+            model.addAttribute("srch", true); // Đặt cờ tìm kiếm thành true
         } else {
-            List<ProductOrder> allOrders = orderService.getAllOrders();
-            model.addAttribute("orders", allOrders);
+            // Nếu không có mã đơn hàng, hiển thị tất cả đơn hàng
+            Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo, pageSize);
+            model.addAttribute("orders", page);
             model.addAttribute("srch", false);
+
+            model.addAttribute("pageNo", page.getNumber());
+            model.addAttribute("pageSize", pageSize);
+            model.addAttribute("totalElements", page.getTotalElements());
+            model.addAttribute("totalPages", page.getTotalPages());
+            model.addAttribute("isFirst", page.isFirst());
+            model.addAttribute("isLast", page.isLast());
         }
-        return "/admin/orders";
+        return "/admin/orders"; // Trả về trang admin/orders.html
 
     }
 }

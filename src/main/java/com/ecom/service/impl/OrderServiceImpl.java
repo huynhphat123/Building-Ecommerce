@@ -35,27 +35,38 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void saveOrder(Integer userid, OrderRequest orderRequest) throws Exception {
-        // Tìm các sản phẩm trong giỏ hàng của người dùng
+        // Lấy danh sách giỏ hàng của người dùng dựa trên ID người dùng
         List<Cart> carts = cartRepository.findByUserId(userid);
 
+        // Lặp qua từng sản phẩm trong giỏ hàng
         for (Cart cart : carts) {
 
-            // Tạo đối tượng đơn hàng mới từ các thông tin trong giỏ hàng
+            // Tạo một đối tượng ProductOrder mới để lưu thông tin đơn hàng
             ProductOrder order = new ProductOrder();
 
-            // Tạo ID cho đơn hàng và ngày đặt hàng
+            // Thiết lập ID cho đơn hàng bằng UUID ngẫu nhiên
             order.setOrderId(UUID.randomUUID().toString());
+
+            // Lấy ngày hiện tại làm ngày đặt hàng
             order.setOrderDate(LocalDate.now());
 
-            // Thiết lập thông tin sản phẩm và giá của sản phẩm
+            // Thiết lập sản phẩm và giá từ giỏ hàng
             order.setProduct(cart.getProduct());
-            order.setPrice(cart.getProduct().getDiscountPrice());
+            order.setPrice(cart.getProduct().getDiscountPrice()); // Lấy giá giảm của sản phẩm
 
-            // Thiết lập trạng thái ban đầu của đơn hàng
-            order.setStatus(OrderStatus.N_PROGRESS.getName());
+            // Thiết lập số lượng sản phẩm từ giỏ hàng
+            order.setQuantity(cart.getQuantity());
+
+            // Gắn thông tin người dùng từ giỏ hàng vào đơn hàng
+            order.setUser(cart.getUser());
+
+            // Đặt trạng thái ban đầu của đơn hàng (IN_PROGRESS - đang xử lý)
+            order.setStatus(OrderStatus.IN_PROGRESS.getName());
+
+            // Gắn loại hình thanh toán từ yêu cầu đặt hàng
             order.setPaymentType(orderRequest.getPaymentType());
 
-            // Thiết lập thông tin địa chỉ giao hàng
+            // Thiết lập các thông tin về tên, email, số điện thoại và địa chỉ từ yêu cầu đặt hàng
             OrderAddress address = new OrderAddress();
             address.setFirstName(orderRequest.getFirstName());
             address.setLastName(orderRequest.getLastName());
@@ -66,14 +77,14 @@ public class OrderServiceImpl implements OrderService {
             address.setState(orderRequest.getState());
             address.setPincode(orderRequest.getPincode());
 
-            order.setOrderAddress(address); // Gắn địa chỉ vào đơn hàng
-
-            // Lưu đơn hàng vào cơ sở dữ liệu
+            // Gắn địa chỉ vào đối tượng đơn hàng
             order.setOrderAddress(address);
 
+            // Lưu đơn hàng vào cơ sở dữ liệu
             ProductOrder saveOrder = orderRepository.save(order);
 
-            commonUtil.sendMailForProductOrder(saveOrder, "thành công");
+            // Gửi email thông báo đơn hàng đã được đặt thành công
+            commonUtil.sendMailForProductOrder(saveOrder, "Thành công");
         }
     }
 
@@ -101,17 +112,21 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<ProductOrder> getAllOrders() {
+        // Lấy tất cả đơn hàng
         return orderRepository.findAll();
     }
 
     @Override
     public ProductOrder getOrdersByOrderId(String orderId) {
+        // Lấy đơn hàng theo mã đơn hàng
         return orderRepository.findByOrderId(orderId);
     }
 
     @Override
     public Page<ProductOrder> getAllOrdersPagination(Integer pageNo, Integer pageSize) {
+        // Tạo đối tượng phân trang
         Pageable pageable = PageRequest.of(pageNo, pageSize);
+        // Lấy tất cả đơn hàng theo trang
         return orderRepository.findAll(pageable);
     }
 

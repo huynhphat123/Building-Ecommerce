@@ -103,20 +103,60 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getAllActiveProducts(String category) {
         List<Product> products = null;
+
+        // Nếu không có danh mục được truyền vào, tìm tất cả sản phẩm đang hoạt động
         if (ObjectUtils.isEmpty(category)) {
             products = productRepository.findByIsActiveTrue();
         } else {
+            // Nếu có danh mục, tìm sản phẩm theo danh mục
             products = productRepository.findByCategory(category);
         }
 
-        return products;
+        return products; // Trả về danh sách sản phẩm theo điều kiện tìm kiếm
     }
 
     @Override
     public List<Product> searchProduct(String ch) {
+        // Tìm sản phẩm theo tiêu đề hoặc danh mục có chứa chuỗi tìm kiếm, không phân biệt hoa thường
         return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch, ch);
     }
 
+    @Override
+    public Page<Product> getAllActiveProductPagination(Integer pageNo, Integer pageSize, String category) {
+
+        // Tạo đối tượng Pageable dựa trên số trang và kích thước trang
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Product> pageProduct = null;
+
+        // Nếu danh mục rỗng, lấy tất cả sản phẩm đang hoạt động, nếu không thì lọc theo danh mục
+        if (ObjectUtils.isEmpty(category)) {
+            pageProduct = productRepository.findByIsActiveTrue(pageable);
+        } else {
+            pageProduct = productRepository.findByCategory(pageable, category);
+        }
+        // Trả về danh sách sản phẩm đã phân trang
+        return pageProduct;
+    }
+
+    @Override
+    public Page<Product> searchProductPagination(Integer pageNo, Integer pageSize, String ch) {
+
+        // Tạo đối tượng Pageable dựa trên số trang và kích thước trang
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        // Tìm kiếm sản phẩm theo tiêu đề hoặc danh mục và phân trang
+        return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch, ch, pageable);
+    }
+
+    @Override
+    public Page<Product> getAllProductsPagination(Integer pageNo, Integer pageSize) {
+
+        // Tạo đối tượng Pageable dựa trên số trang và kích thước trang
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        // Lấy tất cả sản phẩm và phân trang
+        return productRepository.findAll(pageable);
+    }
 
 
 }

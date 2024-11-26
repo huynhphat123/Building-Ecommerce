@@ -2,7 +2,7 @@ package com.ecom.util;
 
 public enum OrderStatus {
 
-    N_PROGRESS(1, "Đang xử lý"),
+    IN_PROGRESS(1, "Đang xử lý"),
     ORDER_RECEIVED(2, "Đã nhận đơn"),
     PRODUCT_PACKED(3, "Đã đóng gói"),
     OUT_FOR_DELIVERY(4, "Đang giao hàng"),

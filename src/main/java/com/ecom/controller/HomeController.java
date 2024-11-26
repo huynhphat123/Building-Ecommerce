@@ -86,13 +86,26 @@ public class HomeController {
     }
 
     @GetMapping("/products")
-    public String products(Model model, @RequestParam(value = "category", defaultValue = "") String category) {
+    public String products(Model model, @RequestParam(value = "category", defaultValue = "") String category,
+                           @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                           @RequestParam(name = "pageSize",defaultValue = "8")Integer pageSize) {
 
         List<Category> categories = categoryService.getAllActiveCategory();
-        List<Product> products = productService.getAllActiveProducts(category);
         model.addAttribute("categories", categories);
-        model.addAttribute("products", products);
         model.addAttribute("paramValue", category);
+
+        Page<Product> page = productService.getAllActiveProductPagination(pageNo, pageSize, category);
+        List<Product> products = page.getContent();
+        model.addAttribute("products", products);
+        model.addAttribute("productsSize", products.size());
+
+        model.addAttribute("pageNo", page.getNumber());
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("totalElements", page.getTotalElements());
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("isFirst", page.isFirst());
+        model.addAttribute("isLast", page.isLast());
+
         return "product";
     }
 
@@ -201,13 +214,22 @@ public class HomeController {
         }
     }
 
+    // Xử lý yêu cầu tìm kiếm sản phẩm
     @GetMapping("/search")
-    public String searchProduct(@RequestParam String ch,Model model) {
+    public String searchProduct(@RequestParam String ch, Model model) {
+        // Gọi service để tìm kiếm sản phẩm theo tiêu đề hoặc danh mục
         List<Product> searchProducts = productService.searchProduct(ch);
+
+        // Thêm danh sách sản phẩm tìm được vào model để hiển thị trên trang
         model.addAttribute("products", searchProducts);
+
+        // Gọi service để lấy tất cả danh mục đang hoạt động
         List<Category> categories = categoryService.getAllActiveCategory();
+
+        // Thêm danh sách danh mục vào model để hiển thị trên trang
         model.addAttribute("categories", categories);
 
-        return "product";
+        return "product"; // Trả về trang product.html để hiển thị kết quả tìm kiếm
     }
+
 }
