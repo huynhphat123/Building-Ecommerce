@@ -67,13 +67,23 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllActiveCategory() {
+        // Gọi repository để tìm tất cả các danh mục có trạng thái hoạt động (isActive = true)
+        // Đây là một truy vấn đơn giản tìm tất cả các danh mục mà thuộc tính 'isActive' bằng true
         List<Category> categories = categoryRepository.findByIsActiveTrue();
+
+        // Trả về danh sách các danh mục hoạt động
         return categories;
     }
 
     @Override
     public Page<Category> getAllCategorPagination(Integer pageNo, Integer pageSize) {
+        // Tạo đối tượng Pageable để thực hiện phân trang
+        // `pageNo` là chỉ số trang, bắt đầu từ 0, `pageSize` là số lượng mục trên mỗi trang
         Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        // Gọi repository để lấy tất cả danh mục với phân trang
+        // `categoryRepository.findAll(pageable)` sẽ trả về một đối tượng Page chứa danh sách các danh mục
+        // và các thông tin về phân trang như tổng số trang, tổng số mục, v.v.
         return categoryRepository.findAll(pageable);
     }
 }

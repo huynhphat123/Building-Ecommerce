@@ -42,59 +42,17 @@
             <p class="text-center fs-4 fw-bold">Loại danh mục</p>
 
             <!-- Đồng bộ kích thước của tất cả các mục -->
-            <div class="col-md-2 d-flex justify-content-center">
+            <div class="col-md-2 d-flex justify-content-center" th:each="c:${category}">
                 <div class="card shadow-sm mb-4 text-center border-0" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của card -->
                     <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của vòng tròn -->
-                        <img src="img/category_img/macbook-pro-14-inch-m3-2023_1_.webp" class="img-fluid rounded-circle" style="height: 150px; width: 150px;" alt="Mac"> <!-- Tăng kích thước của ảnh -->
+                        <img th:src="@{'img/category_img/'+${c.imageName}}" class="img-fluid rounded-circle" width="65%"
+                             height="140px"> <!-- Tăng kích thước của ảnh -->
                     </div>
-                    <p class="mt-2">Mac</p>
+                    <a th:href="@{'/products?category='+${c.name}}" class="text-decoration-none mt-2">[[${c.name}]]</a>
+
                 </div>
             </div>
 
-            <div class="col-md-2 d-flex justify-content-center">
-                <div class="card shadow-sm mb-4 text-center border-0" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của card -->
-                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của vòng tròn -->
-                        <img src="img/category_img/text_ng_n_12__5_72.webp" class="img-fluid rounded-circle" style="height: 150px; width: 150px;" alt="ASUS"> <!-- Tăng kích thước của ảnh -->
-                    </div>
-                    <p class="mt-2">ASUS</p>
-                </div>
-            </div>
-
-            <div class="col-md-2 d-flex justify-content-center">
-                <div class="card shadow-sm mb-4 text-center border-0" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của card -->
-                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của vòng tròn -->
-                        <img src="img/category_img/text_ng_n_5__3_21.webp" class="img-fluid rounded-circle" style="height: 150px; width: 150px;" alt="Lenovo"> <!-- Tăng kích thước của ảnh -->
-                    </div>
-                    <p class="mt-2">Lenovo</p>
-                </div>
-            </div>
-
-            <div class="col-md-2 d-flex justify-content-center">
-                <div class="card shadow-sm mb-4 text-center border-0" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của card -->
-                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của vòng tròn -->
-                        <img src="img/category_img/text_ng_n_16__6_26.webp" class="img-fluid rounded-circle" style="height: 150px; width: 150px;" alt="MSI"> <!-- Tăng kích thước của ảnh -->
-                    </div>
-                    <p class="mt-2">MSI</p>
-                </div>
-            </div>
-
-            <div class="col-md-2 d-flex justify-content-center">
-                <div class="card shadow-sm mb-4 text-center border-0" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của card -->
-                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của vòng tròn -->
-                        <img src="img/category_img/text_ng_n_10__4_71.webp" class="img-fluid rounded-circle" style="height: 150px; width: 150px;" alt="Acer"> <!-- Tăng kích thước của ảnh -->
-                    </div>
-                    <p class="mt-2">Acer</p>
-                </div>
-            </div>
-
-            <div class="col-md-2 d-flex justify-content-center">
-                <div class="card shadow-sm mb-4 text-center border-0" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của card -->
-                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="height: 200px; width: 200px;"> <!-- Tăng kích thước của vòng tròn -->
-                        <img src="img/category_img/text_ng_n_5__7_36.webp" class="img-fluid rounded-circle" style="height: 150px; width: 150px;" alt="HP"> <!-- Tăng kích thước của ảnh -->
-                    </div>
-                    <p class="mt-2">HP</p>
-                </div>
-            </div>
         </div>
     </div>
     <!-- Kết thúc Loại Module -->
@@ -104,46 +62,37 @@
     <!--   Mô-đun sản phẩm mới nhất -->
 
     <!--   Kết thúc Mô-đun sản phẩm mới nhất -->
-    <div class="container-fluid bg-light p-3">
-        <div class="row">
-            <p class="text-center fs-4 fw-bold">Sản phẩm mới nhất</p>
+    <div class="container-fluid bg-light p-5">
+        <div class="row text-center">
+            <p class="fs-3 mb-4 fw-bold">Sản phẩm mới nhất</p>
+            <div class="col-md-3 col-sm-6 mb-4" th:each="p : ${products}">
+                <div class="card shadow-sm border-0 rounded-lg h-100">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <img alt="Product Image" th:src="@{'img/product_img/'+${p.image}}"
+                             class="img-fluid mb-3" style="max-height: 120px; object-fit: cover;">
+                        <p>
+                            <a th:href="@{'/product/'+${p.id}}" class="text-decoration-none text-dark fs-5 fw-bold">
+                                [[${p.title}]]
+                            </a>
+                        <div class="row text-center">
+                            <p class="fs-6 fw-bold">
+                                <span>[[${p.discountPrice}]]</span> <br>
+                                <span style="text-decoration: line-through; color: gray;"
+                                      class="text-decoration-line-through">[[${p.price}]]</span>
+                                <span class="fs-6 text-success">[[${p.discount}]]%</span>
+                            </p>
+                            <a th:href="@{'/product/'+${p.id}}"
+                               class="btn btn-primary col-md-6 offset-md-3">Xem chi tiết</a>
 
-            <div class="col-md-3">
-                <div class="card shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                    <div class="card-body text-center">
-                        <img src="img/product_img/laptop.jpg" width="65%" height="140px">
-                        <p class="text-center">HP</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                    <div class="card-body text-center">
-                        <img src="img/product_img/laptop.jpg" width="65%" height="140px">
-                        <p class="text-center">HP</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                    <div class="card-body text-center">
-                        <img src="img/product_img/laptop.jpg" width="65%" height="140px">
-                        <p class="text-center">HP</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                    <div class="card-body text-center">
-                        <img src="img/product_img/laptop.jpg" width="65%" height="140px">
-                        <p class="text-center">HP</p>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+
+    </div>
     </div>
 
 </section>

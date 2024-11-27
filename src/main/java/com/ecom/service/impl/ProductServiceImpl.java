@@ -158,6 +158,22 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll(pageable);
     }
 
+    @Override
+    public Page<Product> searchActiveProductPagination(Integer pageNo, Integer pageSize, String category, String ch) {
+        // Khai báo đối tượng Page để lưu kết quả phân trang
+        Page<Product> pageProduct = null;
+
+        // Tạo đối tượng Pageable với số trang và kích thước trang, giúp phân trang dữ liệu
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        // Truy vấn dữ liệu sản phẩm với các điều kiện:
+        // - Sản phẩm phải đang hoạt động (isActive = true)
+        // - Tên sản phẩm (title) hoặc danh mục (category) chứa chuỗi tìm kiếm (ch), không phân biệt chữ hoa hay chữ thường
+        pageProduct = productRepository.findByisActiveTrueAndTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch, ch, pageable);
+
+        // Trả về đối tượng Page chứa các sản phẩm theo các điều kiện trên
+        return pageProduct;
+    }
 
 }
 

@@ -1,6 +1,7 @@
 package com.ecom.util;
 
 import com.ecom.model.ProductOrder;
+import com.ecom.model.UserDtls;
 import com.ecom.service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -11,6 +12,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 
 @Component
 public class CommonUtil {
@@ -21,10 +23,6 @@ public class CommonUtil {
     @Autowired
     private UserService userService;
 
-//    public static void sendMailForProductOrder(ProductOrder updateOrder, String status) {
-//
-//
-//    }
 
     public  Boolean sendMail(String url,String reciepentEmail) throws MessagingException, UnsupportedEncodingException {
 
@@ -98,6 +96,14 @@ public class CommonUtil {
         return true;
     }
 
+        public UserDtls getLoggedInUserDetails(Principal p) {
+            // Lấy email của người dùng đã đăng nhập từ Principal (thường được cung cấp bởi Spring Security)
+            String email = p.getName();
 
+            // Dùng email để tìm thông tin người dùng từ dịch vụ UserService
+            UserDtls userDtls = userService.getUserByEmail(email);
 
+            // Trả về đối tượng UserDtls chứa thông tin chi tiết của người dùng
+            return userDtls;
+        }
 }

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -46,6 +47,10 @@ public class AdminController {
 
     @Autowired
     private CommonUtil commonUtil;  // Các hàm tiện ích chung
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @ModelAttribute
     public void getUserDetails(Principal p, Model model) {
         if (p != null) {
@@ -73,22 +78,29 @@ public class AdminController {
         return "admin/add_product"; // Trả về view để thêm sản phẩm
     }
 
+    // Lấy danh sách các danh mục sản phẩm với phân trang
     @GetMapping("/category")
-    public String category(Model model, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                           @RequestParam(name = "pageSize", defaultValue = "8") Integer pageSize) {
+    public String category(Model model,
+                           @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,  // Lấy số trang (mặc định là 0)
+                           @RequestParam(name = "pageSize", defaultValue = "8") Integer pageSize) {  // Lấy số lượng sản phẩm mỗi trang (mặc định là 8)
 
+        // Lấy danh sách các danh mục sản phẩm theo phân trang
         Page<Category> page = categoryService.getAllCategorPagination(pageNo, pageSize);
-        List<Category> categorys = page.getContent();
+        List<Category> categorys = page.getContent();  // Lấy các danh mục từ đối tượng Page
+
+        // Truyền danh sách danh mục vào model để hiển thị trong view
         model.addAttribute("categorys", categorys);
 
-        model.addAttribute("pageNo", page.getNumber());
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalElements", page.getTotalElements());
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("isFirst", page.isFirst());
-        model.addAttribute("isLast", page.isLast());
+        // Truyền thông tin phân trang vào model
+        model.addAttribute("pageNo", page.getNumber());  // Số trang hiện tại
+        model.addAttribute("pageSize", pageSize);  // Số lượng sản phẩm mỗi trang
+        model.addAttribute("totalElements", page.getTotalElements());  // Tổng số danh mục
+        model.addAttribute("totalPages", page.getTotalPages());  // Tổng số trang
+        model.addAttribute("isFirst", page.isFirst());  // Kiểm tra nếu đây là trang đầu tiên
+        model.addAttribute("isLast", page.isLast());  // Kiểm tra nếu đây là trang cuối cùng
 
-        return "admin/category";  // Trả về view danh sách danh mục
+        // Trả về view danh sách danh mục
+        return "admin/category";
     }
 
     // Xử lý lưu danh mục mới
@@ -270,18 +282,20 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public String getAllUsers(Model model) {
-        // Lấy danh sách tất cả người dùng có vai trò là "ROLE_USER"
-        List<UserDtls> users = userService.getUsers("ROLE_USER");
-
-        // Thêm danh sách người dùng vào model để truyền dữ liệu vào view
+    public String getAllUsers(Model model,@RequestParam Integer type) {
+        List<UserDtls> users = null;
+        if (type == 1) {
+            users = userService.getUsers("ROLE_USER");
+        } else {
+            users = userService.getUsers("ROLE_ADMIN");
+        }
+        model.addAttribute("userType",type);
         model.addAttribute("users", users);
-
         // Trả về trang quản lý người dùng trong admin
         return "/admin/users";
     }
     @GetMapping("/updateStatus")
-    public String updateUsAccountStatus(@RequestParam Boolean status, @RequestParam Integer id, HttpSession session) {
+    public String updateUsAccountStatus(@RequestParam Boolean status, @RequestParam Integer id,@RequestParam Integer type, HttpSession session) {
         // Cập nhật trạng thái tài khoản của người dùng dựa trên id và trạng thái được truyền vào
         Boolean f = userService.updateAccountStatus(id, status);
 
@@ -293,13 +307,13 @@ public class AdminController {
         }
 
         // Chuyển hướng lại về trang danh sách người dùng
-        return "redirect:/admin/users";
+        return "redirect:/admin/users?type="+type;
     }
 
     // Lấy danh sách tất cả đơn hàng có phân trang
     @GetMapping("/orders")
     public String getAllOrders(Model model, @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                               @RequestParam(name = "pageSize", defaultValue = "1") Integer pageSize) {
+                               @RequestParam(name = "pageSize", defaultValue = "8") Integer pageSize) {
 
         // Gọi service để lấy danh sách đơn hàng với phân trang
         Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo, pageSize);
@@ -357,7 +371,7 @@ public class AdminController {
     // Tìm kiếm đơn hàng theo mã đơn hàng
     @GetMapping("/search-order")
     public String searchProduct(@RequestParam String orderId, Model model, HttpSession session,@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                                @RequestParam(name = "pageSize", defaultValue = "2") Integer pageSize) {
+                                @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
 
         // Kiểm tra nếu có mã đơn hàng được nhập
         if (orderId != null && orderId.length() > 0) {
@@ -390,4 +404,104 @@ public class AdminController {
         return "/admin/orders"; // Trả về trang admin/orders.html
 
     }
+
+    // Hiển thị trang thêm mới quản trị viên
+    @GetMapping("/add-admin")
+    public String loadAdminAdd() {
+        return "/admin/add_admin";  // Trả về trang thêm mới quản trị viên
+    }
+
+    // Xử lý việc lưu quản trị viên mới vào hệ thống
+    @PostMapping("/save-admin")
+    public String saveAdmin(@ModelAttribute UserDtls user,
+                            @RequestParam("img") MultipartFile file,  // Lấy file hình ảnh của quản trị viên
+                            HttpSession session) throws IOException {  // Lấy thông tin session để hiển thị thông báo thành công/thất bại
+
+        // Kiểm tra xem có file hình ảnh hay không, nếu không có thì gán tên hình ảnh mặc định
+        String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+        user.setProfileImage(imageName);  // Gán tên hình ảnh vào đối tượng user
+
+        // Lưu thông tin người dùng vào cơ sở dữ liệu
+        UserDtls saveUser = userService.saveAdmin(user);
+
+        // Kiểm tra nếu lưu thành công
+        if (!ObjectUtils.isEmpty(saveUser)) {
+            // Nếu có file hình ảnh, lưu vào thư mục tĩnh
+            if (!file.isEmpty()) {
+                File saveFile = new ClassPathResource("static/img").getFile();
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator + file.getOriginalFilename());
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);  // Lưu file vào thư mục
+
+            }
+            // Thiết lập thông báo thành công vào session
+            session.setAttribute("succMsg", "Đăng ký thành công");
+        } else {
+            // Thiết lập thông báo lỗi vào session
+            session.setAttribute("errorMsg", "Có lỗi xảy ra, vui lòng thử lại!");
+        }
+
+        // Chuyển hướng về trang thêm quản trị viên sau khi xử lý
+        return "redirect:/admin/add-admin";
+    }
+
+    // Hiển thị trang thông tin quản trị viên (hồ sơ)
+    @GetMapping("/profile")
+    public String profile() {
+        return "/admin/profile";  // Trả về trang thông tin quản trị viên
+    }
+
+    // Xử lý việc cập nhật thông tin quản trị viên (hồ sơ)
+    @PostMapping("/update-profile")
+    public String updateProfile(@ModelAttribute UserDtls user,
+                                @RequestParam MultipartFile img,  // Lấy file ảnh mới của người dùng
+                                HttpSession session) {  // Lấy thông tin session để hiển thị thông báo thành công/thất bại
+
+        // Cập nhật hồ sơ người dùng
+        UserDtls updateUserProfile = userService.updateUserProfile(user, img);
+
+        // Kiểm tra nếu hồ sơ đã được cập nhật thành công
+        if (ObjectUtils.isEmpty(updateUserProfile)) {
+            session.setAttribute("errorMsg", "Hồ sơ chưa được cập nhật");
+        } else {
+            session.setAttribute("succMsg", "Đã cập nhật hồ sơ");
+        }
+
+        // Chuyển hướng về trang hồ sơ quản trị viên
+        return "redirect:/admin/profile";
+    }
+
+    // Xử lý thay đổi mật khẩu của quản trị viên
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String newPassword,  // Lấy mật khẩu mới
+                                 @RequestParam String currentPassword,  // Lấy mật khẩu hiện tại
+                                 Principal p,  // Lấy thông tin người dùng đã đăng nhập
+                                 HttpSession session) {  // Lấy thông tin session để hiển thị thông báo thành công/thất bại
+
+        // Lấy thông tin quản trị viên đang đăng nhập
+        UserDtls loggedInUserDetails = commonUtil.getLoggedInUserDetails(p);
+
+        // Kiểm tra xem mật khẩu hiện tại có khớp với mật khẩu trong cơ sở dữ liệu không
+        boolean matches = passwordEncoder.matches(currentPassword, loggedInUserDetails.getPassword());
+
+        if (matches) {
+            // Mật khẩu hiện tại đúng, mã hóa mật khẩu mới và cập nhật thông tin người dùng
+            String encodePassword = passwordEncoder.encode(newPassword);
+            loggedInUserDetails.setPassword(encodePassword);
+            UserDtls updateUser = userService.updateUser(loggedInUserDetails);
+
+            // Kiểm tra nếu cập nhật thành công
+            if (ObjectUtils.isEmpty(updateUser)) {
+                session.setAttribute("errorMsg", "Mật khẩu chưa được cập nhật, có lỗi xảy ra!");
+            } else {
+                session.setAttribute("succMsg", "Mật khẩu đã được cập nhật thành công");
+            }
+        } else {
+            // Nếu mật khẩu hiện tại không đúng
+            session.setAttribute("errorMsg", "Mật khẩu hiện tại không chính xác");
+        }
+
+        // Chuyển hướng về trang hồ sơ quản trị viên
+        return "redirect:/admin/profile";
+    }
+
 }

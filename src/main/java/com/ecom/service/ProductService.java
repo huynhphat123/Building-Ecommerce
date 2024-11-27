@@ -38,5 +38,6 @@ public interface ProductService {
     // Lấy tất cả sản phẩm và phân trang
     public Page<Product> getAllProductsPagination(Integer pageNo, Integer pageSize);
 
+    Page<Product> searchActiveProductPagination(Integer pageNo, Integer pageSize, String category, String ch);
 }
 

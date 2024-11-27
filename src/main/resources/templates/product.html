@@ -10,7 +10,7 @@
     <div class="container-fluid custom-blue p-4 mt-5">
         <div class="row">
             <div class="col-md-8 offset-md-2">
-                <form action="search" method="get">
+                <form action="/products" method="get">
                     <div class="input-group">
                         <input type="text" class="form-control" name="ch" placeholder="Nhập sản phẩm bạn cần tìm">
                         <button class="btn btn-light text-dark ms-3 col-md-2">
@@ -49,7 +49,7 @@
                         <p class="js-3 text-center fw-bold fs-4">Các sản phẩm</p>
                         <div class="row">
 
-                        <th:block th:if="${#lists.size(products) > 0}">
+                        <th:block th:if="${productsSize > 0}">
                                 <div class="col-md-3 mt-2" th:each="p:${products}">
                                     <div class="card">
                                         <div class="card-body text-center">
@@ -72,7 +72,7 @@
 
                         </th:block>
 
-                        <th:block th:unless="${#lists.size(products) > 0}">
+                        <th:block th:unless="${productsSize > 0}">
                             <p class="fs-f4 text-center mt-4 text-danger fw-bold">Sản phẩm không có sẵn</p>
                         </th:block>
                     </div>
@@ -84,7 +84,7 @@
             <div class="row">
                 <div class="col-md-4">Tổng số sản phẩm : [[${totalElements}]]</div>
                 <div class="col-md-6">
-                    <th:block th:if="${productsSize>0}">
+                    <th:block th:if="${productsSize > 0}">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
                                 <li class="page-item"
@@ -107,6 +107,7 @@
                                 </a></li>
                             </ul>
                         </nav>
+
                 </div>
                 </th:block>
             </div>

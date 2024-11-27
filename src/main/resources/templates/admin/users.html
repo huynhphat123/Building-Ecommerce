@@ -8,7 +8,9 @@
 <body>
 <section>
     <div class="container-fluid mt-5 p-5">
-        <p class="text-center fw-bold fs-3 mt-4">Danh sách tất cả người dùng</p>
+        <a href="/admin/" class="text-decoration-none"><i
+                class="fa-solid fa-arrow-left"></i> Quay lại</a>
+        <p class="text-center fw-bold fs-3 mt-4">Danh sách tất cả</p>
 
         <div class="card card-sh">
             <div class="card-header text-center">
@@ -48,10 +50,10 @@
                         <td>[[${u.number}]]</td>
                         <td>[[${u.address}]]</td>
                         <td>[[${u.isEnable}]]</td>
-                        <td><a th:href="@{'/admin/updateStatus?status=true&id='+${u.id}}"
+                        <td><a th:href="@{'/admin/updateStatus?status=true&id='+${u.id}} + '&type='+${userType}"
                                class="btn btn-sm btn-primary">Bật trạng thái</a>
                             <a
-                                    th:href="@{'/admin/updateStatus?status=false&id='+${u.id}}"
+                                    th:href="@{'/admin/updateStatus?status=false&id='+${u.id}} + '&type='+${userType}"
                                 class="btn btn-sm btn-danger">Tắt trạng thái</a></td>
                     </tr>
 

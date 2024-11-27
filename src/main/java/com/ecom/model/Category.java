@@ -17,7 +17,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Tự động tăng giá trị cho ID
-    private int id;
+    private Integer id;
 
     private String name; // Tên danh mục
 

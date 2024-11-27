@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Hồ Sơ Quản trị viên</title>
+</head>
+<body>
+<section>
+    <div class="container-fluid mt-5 p-5 bg-light">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <a href="/admin/" class="text-decoration-none"><i
+                        class="fa-solid fa-arrow-left"></i> Quay lại</a>
+                <p class="fs-3 text-center">Hồ Sơ Của Tôi</p>
+                <th:block th:if="${session.succMsg}">
+                    <p class="text-success fw-bold text-center">[[${session.succMsg}]]</p>
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </th:block>
+
+                <th:block th:if="${session.errorMsg}">
+                    <p class="text-danger fw-bold text-center">[[${session.errorMsg}]]</p>
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </th:block>
+                <hr>
+                <div class="text-center">
+                    <img alt="" th:src="@{'../img/profile_img/'+${user.profileImage}}" class="border p-2"
+                         style="width: 110px; height: 110px; border-radius: 50%;">
+                </div>
+                <div class="col-md-8 offset-md-2 mt-4">
+                    <table class="table table-borderless">
+                        <tbody>
+                        <form action="/admin/update-profile" method="post" enctype="multipart/form-data">
+                            <tr>
+                                <th scope="row">Tên</th>
+                                <td>:</td>
+                                <td><input type="text" name="name" class="form-control"
+                                           th:value="${user.name}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Số điện thoại</th>
+                                <td>:</td>
+                                <td><input type="text" name="number" class="form-control"
+                                           th:value="${user.number}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Email</th>
+                                <td>:</td>
+                                <td><input type="text" name="" class="form-control" readonly
+                                           th:value="${user.email}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Địa chỉ</th>
+                                <td>:</td>
+                                <td><input type="text" name="address" class="form-control"
+                                           th:value="${user.address}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Thành phố</th>
+                                <td>:</td>
+                                <td><input type="text" name="city" class="form-control"
+                                           th:value="${user.city}"></td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row">Ảnh</th>
+                                <td>:</td>
+                                <td><input type="file" name="img" class="form-control" value=""></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Vai trò</th>
+                                <td>:</td>
+                                <td><input type="text" name="" class="form-control" readonly
+                                           th:value="${user.role}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Trạng thái tài khoản</th>
+                                <td>:</td>
+                                <td><input type="text" name="" class="form-control" readonly
+                                           th:value="${user.isEnable}">
+                                    <input type="hidden" th:value="${user.id}" name="id"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm bg-primary text-light">Cập nhật</button>
+                                </td>
+                            </tr>
+                        </form>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <hr>
+            <div class="col-md-10 offset-md-1 mt-1">
+                <div class="row">
+                    <p class="text-center fs-3 fw-bold">Đổi mật khẩu</p>
+                    <div class="col-md-6 offset-md-3">
+                        <table class="table table-borderless">
+                            <tbody>
+                            <form action="/admin/change-password" method="post">
+                                <tr>
+                                    <th scope="row">Mật khẩu hiện tại</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="password" name="currentPassword" class="form-control" id="currentPassword">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordAdmin('currentPassword')">
+                                                <i class="bi bi-eye-slash"></i> <!-- icon của Bootstrap Icons -->
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th scope="row">Mật khẩu mới</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="password" name="newPassword" class="form-control" id="newPassword">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordAdmin('newPassword')">
+                                                <i class="bi bi-eye-slash"></i> <!-- icon của Bootstrap Icons -->
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th scope="row">Xác nhận mật khẩu</th>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="password" name="confirmPassword" class="form-control" id="confirmPassword">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordAdmin('confirmPassword')">
+                                                <i class="bi bi-eye-slash"></i> <!-- icon của Bootstrap Icons -->
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm bg-primary text-light col-md-4">Thay đổi</button>
+                                    </td>
+                                </tr>
+                            </form>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    // Hàm để thay đổi trạng thái ẩn/hiện mật khẩu
+    function togglePasswordAdmin(id) {
+        var input = document.getElementById(id);
+        var icon = input.nextElementSibling.querySelector('i');  // Lấy icon trong nút button
+
+        if (input.type === "password") {
+            input.type = "text";  // Chuyển thành text để hiển thị mật khẩu
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");  // Đổi icon thành 'mắt'
+        } else {
+            input.type = "password";  // Chuyển lại thành password để ẩn mật khẩu
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");  // Đổi icon thành 'mắt bị gạch'
+        }
+    }
+</script>
+</body>
+</html>

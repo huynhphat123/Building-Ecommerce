@@ -69,10 +69,33 @@ public class HomeController {
         model.addAttribute("categorys", allActiveCategory);  // Thêm danh mục vào model
     }
 
-    @GetMapping("/")
-    public String index() {
-        return "index"; // Trả về index.html trong /templates/
+    @GetMapping("/")  // Xử lý yêu cầu GET đến trang chủ "/"
+    public String index(Model model) {
+
+        // Lấy danh sách các thể loại (category) đang hoạt động từ service
+        // Sắp xếp theo ID giảm dần và lấy 6 danh mục mới nhất
+        List<Category> allActiveCategory = categoryService.getAllActiveCategory().stream()
+                .sorted((c1, c2) -> c2.getId().compareTo(c1.getId())) // Sắp xếp theo ID giảm dần
+                .limit(6)  // Giới hạn số lượng thể loại là 6
+                .toList();  // Chuyển thành danh sách
+
+        // Lấy danh sách các sản phẩm (product) đang hoạt động từ service
+        // Sắp xếp theo ID giảm dần và lấy 12 sản phẩm mới nhất
+        List<Product> allActiveProducts = productService.getAllActiveProducts("").stream()
+                .sorted((p1, p2) -> p2.getId().compareTo(p1.getId())) // Sắp xếp theo ID giảm dần
+                .limit(12)  // Giới hạn số lượng sản phẩm là 8
+                .toList();  // Chuyển thành danh sách
+
+        // Thêm dữ liệu thể loại vào model để truyền vào view
+        model.addAttribute("category", allActiveCategory);
+
+        // Thêm dữ liệu sản phẩm vào model để truyền vào view
+        model.addAttribute("products", allActiveProducts);
+
+        // Trả về tên view là "index", nơi dữ liệu sẽ được hiển thị
+        return "index";
     }
+
 
     @GetMapping("/signin")
     public String login() {
@@ -85,29 +108,52 @@ public class HomeController {
         return "register"; // Trả về register.html trong /templates/
     }
 
-    @GetMapping("/products")
-    public String products(Model model, @RequestParam(value = "category", defaultValue = "") String category,
-                           @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                           @RequestParam(name = "pageSize",defaultValue = "8")Integer pageSize) {
+    @GetMapping("/products")  // Xử lý yêu cầu GET đến trang "/products" (hiển thị danh sách sản phẩm)
+    public String products(Model model,
+                           @RequestParam(value = "category", defaultValue = "") String category,  // Lấy tham số category từ URL, mặc định là chuỗi rỗng
+                           @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,  // Lấy tham số pageNo từ URL (trang hiện tại), mặc định là trang 0
+                           @RequestParam(name = "pageSize", defaultValue = "12") Integer pageSize,  // Lấy tham số pageSize từ URL (số lượng sản phẩm mỗi trang), mặc định là 12
+                           @RequestParam(defaultValue = "") String ch) {  // Lấy tham số tìm kiếm ch từ URL, mặc định là chuỗi rỗng
 
+        // Lấy danh sách các thể loại đang hoạt động và truyền vào model để hiển thị ở view
         List<Category> categories = categoryService.getAllActiveCategory();
         model.addAttribute("categories", categories);
+
+        // Truyền tham số category vào model để sử dụng trong view (dành cho việc lọc theo thể loại)
         model.addAttribute("paramValue", category);
 
-        Page<Product> page = productService.getAllActiveProductPagination(pageNo, pageSize, category);
+        // Khai báo đối tượng Page<Product> để chứa danh sách sản phẩm phân trang
+        Page<Product> page = null;
+
+        // Nếu tham số tìm kiếm "ch" rỗng, lấy tất cả sản phẩm theo phân trang
+        if (StringUtils.isEmpty(ch)) {
+            page = productService.getAllActiveProductPagination(pageNo, pageSize, category);  // Lấy sản phẩm theo phân trang và thể loại
+        } else {
+            // Nếu có tham số tìm kiếm "ch", thực hiện tìm kiếm sản phẩm theo phân trang và thể loại
+            page = productService.searchActiveProductPagination(pageNo, pageSize, category, ch);  // Tìm kiếm sản phẩm theo tên
+        }
+
+        // Lấy danh sách sản phẩm từ đối tượng Page
         List<Product> products = page.getContent();
+
+        // Truyền danh sách sản phẩm vào model để hiển thị
         model.addAttribute("products", products);
+
+        // Truyền số lượng sản phẩm vào model
         model.addAttribute("productsSize", products.size());
 
-        model.addAttribute("pageNo", page.getNumber());
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalElements", page.getTotalElements());
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("isFirst", page.isFirst());
-        model.addAttribute("isLast", page.isLast());
+        // Truyền thông tin phân trang vào model
+        model.addAttribute("pageNo", page.getNumber());  // Số trang hiện tại
+        model.addAttribute("pageSize", pageSize);  // Số lượng sản phẩm mỗi trang
+        model.addAttribute("totalElements", page.getTotalElements());  // Tổng số sản phẩm
+        model.addAttribute("totalPages", page.getTotalPages());  // Tổng số trang
+        model.addAttribute("isFirst", page.isFirst());  // Kiểm tra nếu đây là trang đầu tiên
+        model.addAttribute("isLast", page.isLast());  // Kiểm tra nếu đây là trang cuối cùng
 
+        // Trả về tên view (trang web) sẽ hiển thị dữ liệu, ở đây là "product"
         return "product";
     }
+
 
 
     @GetMapping("/product/{id}")
