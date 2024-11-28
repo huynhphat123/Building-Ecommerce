@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-md-6 mt-3 p-5">
                     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-                        <div class="card-header">
+                        <div class="card-header text-center">
                             <p class="fs-4 text-center register-title text-primary">Đăng ký tài khoản</p>
                             <!-- Thông báo thành công hoặc lỗi -->
                             <th:block th:if="${session.succMsg}">
@@ -27,7 +27,8 @@
                             </th:block>
                         </div>
                         <div class="card-body">
-                            <form action="/saveUser" enctype="multipart/form-data" method="post">
+                            <form action="/saveUser" enctype="multipart/form-data"
+                                  method="post" id="userRegister" novalidate>
 
                                 <div class="row">
                                     <div class="col">
@@ -63,7 +64,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <label class="form-label">Mật khẩu</label>
-                                            <input class="form-control" name="password" type="password" required>
+                                            <input class="form-control" name="password" type="password" id="pass" required>
                                         </div>
 
                                         <div class="mb-3">
@@ -76,14 +77,12 @@
                                     <label class="form-label">Tải ảnh</label>
                                     <input class="form-control" name="img" type="file" required>
                                 </div>
-
-
                                 <button type="submit" class="btn bg-primary text-white col-md-12">Đăng ký</button>
                             </form>
                         </div>
 
                         <div class="card-footer text-center">
-                            Bạn đã có tài khoản?  <a href="/login" class="text-decoration-none">Đăng nhập ngay
+                            Bạn đã có tài khoản?  <a href="/signin"  class="text-decoration-none">Đăng nhập ngay
                         </a>
                         </div>
                     </div>

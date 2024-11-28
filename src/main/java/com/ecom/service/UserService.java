@@ -51,4 +51,7 @@ public interface UserService {
     // Phương thức này được sử dụng khi tạo tài khoản quản trị viên (admin) mới.
     // Cập nhật vai trò là "ROLE_ADMIN", mật khẩu được mã hóa và tài khoản mặc định được kích hoạt.
     public UserDtls saveAdmin(UserDtls user);
+
+    public Boolean existsEmail(String email);
+
 }
